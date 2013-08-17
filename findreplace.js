@@ -432,7 +432,7 @@ define(function(require, exports, module) {
                 winFindInFiles = findinfiles.getElement("winSearchInFiles");
             } catch(e) {}
             if (winFindInFiles && winFindInFiles.visible) {
-                findinfiles.toggle(-1, null, null, function(){
+                findinfiles.toggle(-1, null, true, function(){
                     showUi(callback);
                 });
                 return;
