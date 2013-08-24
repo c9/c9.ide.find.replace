@@ -51,7 +51,13 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
         "plugins/c9.ide.ui/anims",
         "plugins/c9.ide.ui/tooltip",
         "plugins/c9.fs/proc",
-        "plugins/c9.fs/vfs",
+        {
+            packagePath: "plugins/c9.vfs.client/vfs_client",
+            smithIo     : {
+                "prefix": "/smith.io/server"
+            }
+        },
+        "plugins/c9.ide.auth/auth",
         "plugins/c9.fs/fs",
         
         // Mock plugins
