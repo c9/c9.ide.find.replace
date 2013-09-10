@@ -171,7 +171,7 @@ define(function(require, exports, module) {
                 command : "replaceall"
             }), 800, plugin);
             
-            tabs.on("after.activate", function(e){
+            tabs.on("afterActivate", function(e){
                 if (winSearchReplace && winSearchReplace.visible) {
                     if (e.page && e.page.editor.ace) {
                         winSearchReplace.enable();
