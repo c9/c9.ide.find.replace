@@ -296,7 +296,7 @@ define(function(require, exports, module) {
 
             document.body.appendChild(tooltipSearchReplace.$ext);
 
-            chk.regEx.on("prop.value", function(e){
+            chk.regEx.on("propValue", function(e){
                 libsearch.setRegexpMode(txtFind, apf.isTrue(e.value));
             });
 
