@@ -37,7 +37,7 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
         },
         "plugins/c9.ide.editors/editor",
         "plugins/c9.ide.editors/tabs",
-        "plugins/c9.ide.editors/tab",
+        "plugins/c9.ide.editors/pane",
         "plugins/c9.ide.editors/page",
         {
             packagePath : "plugins/c9.ide.ace/ace",
@@ -127,7 +127,7 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
         
         
         function getPageHtml(page){
-            return page.tab.aml.getPage("editor::" + page.editorType).$ext
+            return page.pane.aml.getPage("editor::" + page.editorType).$ext
         }
         
         expect.html.setConstructor(function(page){
@@ -151,7 +151,7 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
                 var ace, page;
                 var findreplace = window.app.services.findreplace;
                 var commands = window.app.services.commands;
-                it('should open a tab with just an editor', function(done) {
+                it('should open a pane with just an editor', function(done) {
                     tabs.openFile("nofile.md", function(err, page_){
                         expect(tabs.getPages()).length(1);
                         page = tabs.getPages()[0];
@@ -235,7 +235,7 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
                 });
             });
             describe("unload", function(){
-                it('should open a tab with just an editor', function(done) {
+                it('should open a pane with just an editor', function(done) {
                     if (!onload.remain)
                         findreplace.unload();
                     done();
