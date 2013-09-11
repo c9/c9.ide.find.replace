@@ -38,7 +38,7 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
         "plugins/c9.ide.editors/editor",
         "plugins/c9.ide.editors/tabs",
         "plugins/c9.ide.editors/pane",
-        "plugins/c9.ide.editors/page",
+        "plugins/c9.ide.editors/tab",
         {
             packagePath : "plugins/c9.ide.ace/ace",
             staticPrefix : "plugins/c9.ide.layout.classic"
@@ -126,13 +126,13 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
         var Range = require("ace/range").Range;
         
         
-        function getPageHtml(page){
-            return page.pane.aml.getPage("editor::" + page.editorType).$ext
+        function getPageHtml(tab){
+            return tab.pane.aml.getPage("editor::" + tab.editorType).$ext
         }
         
-        expect.html.setConstructor(function(page){
-            if (typeof page == "object")
-                return getPageHtml(page);
+        expect.html.setConstructor(function(tab){
+            if (typeof tab == "object")
+                return getPageHtml(tab);
         });
         
         describe('ace', function() {
@@ -141,21 +141,21 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
             before(function(done){
                 apf.config.setProperty("allow-select", false);
                 apf.config.setProperty("allow-blur", false);
-                tabs.getTabs()[0].focus();
+                tabs.getPanes()[0].focus();
                 
                 document.body.style.marginBottom = "33%";
                 done();
             });
             
             describe("open", function(){
-                var ace, page;
+                var ace, tab;
                 var findreplace = window.app.services.findreplace;
                 var commands = window.app.services.commands;
                 it('should open a pane with just an editor', function(done) {
                     tabs.openFile("nofile.md", function(err, page_){
                         expect(tabs.getPages()).length(1);
-                        page = tabs.getPages()[0];
-                        ace = page.editor.ace;
+                        tab = tabs.getPages()[0];
+                        ace = tab.editor.ace;
                         done();
                     });
                 });
@@ -165,7 +165,7 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
                         str.push( "a " + i + " b " + (i%10));
                     }
                     
-                    page.editor.focus();
+                    tab.editor.focus();
                     ace.setValue(str.join("\n"));
                     
                     ace.selection.setRange(new Range(0, 0, 0, 1));
@@ -174,7 +174,7 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
                     var txtFind = findreplace.getElement("txtFind");
                     expect(txtFind.getValue()).equal("a");
                     
-                    page.editor.focus();
+                    tab.editor.focus();
                     ace.selection.setRange(new Range(0, 4, 0, 7));
                     
                     commands.exec("find");

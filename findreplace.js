@@ -173,7 +173,7 @@ define(function(require, exports, module) {
             
             tabs.on("afterActivate", function(e){
                 if (winSearchReplace && winSearchReplace.visible) {
-                    if (e.page && e.page.editor.ace) {
+                    if (e.tab && e.tab.editor.ace) {
                         winSearchReplace.enable();
                         execFind(false, "highlight");
                     }
@@ -376,8 +376,8 @@ define(function(require, exports, module) {
         }
 
         function toggleDialog(force, isReplace, noselect, callback) {
-            var page   = tabs.focussedPage;
-            var editor = page && page.editor;
+            var tab   = tabs.focussedPage;
+            var editor = tab && tab.editor;
 
             draw();
 
@@ -409,7 +409,7 @@ define(function(require, exports, module) {
             else if (winSearchReplace.visible) {
                 txtFind.ace.saveHistory();
                 if (!noselect)
-                    tabs.focusPage(page);
+                    tabs.focusPage(tab);
                 hideUi(null, callback);
             }
             else if (callback)
@@ -499,9 +499,9 @@ define(function(require, exports, module) {
         }
 
         function onHide() {
-            var page = tabs.focussedPage;
-            if (page && page.editor.ace)
-                tabs.focusPage(page);
+            var tab = tabs.focussedPage;
+            if (tab && tab.editor.ace)
+                tabs.focusPage(tab);
         }
 
         function getOptions() {
@@ -684,8 +684,8 @@ define(function(require, exports, module) {
         }
 
         function getAce() {
-            var page = tabs.focussedPage;
-            var editor = page && page.editor;
+            var tab = tabs.focussedPage;
+            var editor = tab && tab.editor;
             return editor && editor.ace;
         }
         
