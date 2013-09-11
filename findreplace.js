@@ -376,7 +376,7 @@ define(function(require, exports, module) {
         }
 
         function toggleDialog(force, isReplace, noselect, callback) {
-            var tab   = tabs.focussedPage;
+            var tab   = tabs.focussedTab;
             var editor = tab && tab.editor;
 
             draw();
@@ -409,7 +409,7 @@ define(function(require, exports, module) {
             else if (winSearchReplace.visible) {
                 txtFind.ace.saveHistory();
                 if (!noselect)
-                    tabs.focusPage(tab);
+                    tabs.focusTab(tab);
                 hideUi(null, callback);
             }
             else if (callback)
@@ -499,9 +499,9 @@ define(function(require, exports, module) {
         }
 
         function onHide() {
-            var tab = tabs.focussedPage;
+            var tab = tabs.focussedTab;
             if (tab && tab.editor.ace)
-                tabs.focusPage(tab);
+                tabs.focusTab(tab);
         }
 
         function getOptions() {
@@ -684,7 +684,7 @@ define(function(require, exports, module) {
         }
 
         function getAce() {
-            var tab = tabs.focussedPage;
+            var tab = tabs.focussedTab;
             var editor = tab && tab.editor;
             return editor && editor.ace;
         }
