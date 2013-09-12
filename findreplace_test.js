@@ -36,7 +36,7 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
             defaultEditor: "ace"
         },
         "plugins/c9.ide.editors/editor",
-        "plugins/c9.ide.editors/tabs",
+        "plugins/c9.ide.editors/tabmanager",
         "plugins/c9.ide.editors/pane",
         "plugins/c9.ide.editors/tab",
         {
@@ -106,7 +106,7 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
             }
         },
         {
-            consumes : ["tabs", "ace", "findreplace", "ui", "commands"],
+            consumes : ["tabManager", "ace", "findreplace", "ui", "commands"],
             provides : [],
             setup    : main
         }
@@ -117,7 +117,7 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
     });
     
     function main(options, imports, register) {
-        var tabs        = imports.tabs;
+        var tabs        = imports.tabManager;
         var ace         = imports.ace;
         var ui          = imports.ui;
         var findreplace = imports.findreplace;

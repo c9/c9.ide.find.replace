@@ -9,7 +9,7 @@ define(function(require, exports, module) {
     "use strict";
     main.consumes = [
         "plugin", "settings", "ui", "layout",
-        "anims", "menus", "tabs", "commands", "tooltip", "apf"
+        "anims", "menus", "tabManager", "commands", "tooltip", "apf"
     ];
     main.provides = ["findreplace"];
     return main;
@@ -23,7 +23,7 @@ define(function(require, exports, module) {
         var layout    = imports.layout;
         var commands  = imports.commands;
         var tooltip   = imports.tooltip;
-        var tabs      = imports.tabs;
+        var tabs      = imports.tabManager;
         var apf       = imports.apf;
 
         var css       = require("text!./findreplace.css");
