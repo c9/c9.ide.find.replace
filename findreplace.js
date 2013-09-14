@@ -8,14 +8,14 @@
 define(function(require, exports, module) {
     "use strict";
     main.consumes = [
-        "plugin", "settings", "ui", "layout",
+        "Plugin", "settings", "ui", "layout",
         "anims", "menus", "tabManager", "commands", "tooltip", "apf"
     ];
     main.provides = ["findreplace"];
     return main;
 
     function main(options, imports, register) {
-        var Plugin    = imports.plugin;
+        var Plugin    = imports.Plugin;
         var settings  = imports.settings;
         var ui        = imports.ui;
         var anims     = imports.anims;
