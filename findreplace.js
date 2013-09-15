@@ -338,7 +338,7 @@ define(function(require, exports, module) {
                         var top = pos[1];
                         return [left, top - 16];
                     }
-                });
+                }, plugin);
             });
         }
 
