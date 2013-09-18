@@ -333,7 +333,7 @@ define(function(require, exports, module) {
                     tooltip     : tooltipSearchReplace.$ext,
                     animate     : false,
                     getPosition : function(){
-                        var pos = apf.getAbsolutePosition(winSearchReplace.$ext);
+                        var pos = ui.getAbsolutePosition(winSearchReplace.$ext);
                         var left = pos[0] + cb.getLeft();
                         var top = pos[1];
                         return [left, top - 16];
