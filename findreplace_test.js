@@ -16,7 +16,6 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
         },
         
         "plugins/c9.core/ext",
-        "plugins/c9.core/events",
         "plugins/c9.core/http",
         "plugins/c9.core/util",
         "plugins/c9.ide.ui/lib_apf",
@@ -61,7 +60,7 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
         
         // Mock plugins
         {
-            consumes : ["emitter", "apf", "ui"],
+            consumes : ["apf", "ui"],
             provides : [
                 "commands", "menus", "layout", "watcher", 
                 "save", "preferences", "clipboard"
@@ -69,11 +68,8 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
             setup    : expect.html.mocked
         },
         {
-            consumes : ["emitter", "apf", "ui"],
-            provides : [
-                "commands", "menus", "layout", "watcher", 
-                "save", "preferences"
-            ],
+            consumes : ["ui"],
+            provides : ["layout"],
             setup    : function(options, imports, register){
                 register(null, {
                     layout : (function(){
