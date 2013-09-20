@@ -1,12 +1,6 @@
-/**
- * Searchreplace Module for the Cloud9 IDE
- *
- * @copyright 2010, Ajax.org B.V.
- * @license GPLv3 <http://www.gnu.org/licenses/gpl.txt>
- */
-
 define(function(require, exports, module) {
     "use strict";
+    
     main.consumes = [
         "Plugin", "settings", "ui", "layout",
         "anims", "menus", "tabManager", "commands", "tooltip", "apf"
@@ -760,39 +754,68 @@ define(function(require, exports, module) {
         /***** Register and define API *****/
 
         /**
-         * Draws the file tree
-         * @event afterfilesave Fires after a file is saved
-         * @param {Object} e
-         *     node     {XMLNode} description
-         *     oldpath  {String} description
-         **/
+         * Implements the search and replace UI for Cloud9 IDE.
+         * @singleton
+         */
+        /**
+         * Fetches a ui element. You can use this method both sync and async.
+         * 
+         * The search in files plugin has the following elements:
+         * 
+         * * txtFind - `{ui.textbox}`
+         * * winSearchReplace - `{ui.window}`
+         * * txtReplace - `{ui.textbox}`
+         * * tooltipSearchReplace - `{ui.label}`
+         * * chkSearchSelection - `{ui.checkbox}`
+         * * chkRegEx - `{ui.checkbox}`
+         * * chkSearchBackwards - `{ui.checkbox}`
+         * * chkWrapAround - `{ui.checkbox}`
+         * * chkMatchCase - `{ui.checkbox}`
+         * * chkWholeWords - `{ui.checkbox}`
+         * * chkPreserveCase - `{ui.checkbox}`
+         * * btnPrev - `{ui.button}`
+         * * btnNext - `{ui.button}`
+         * * btnReplace - `{ui.button}`
+         * * btnReplaceAll - `{ui.button}`
+         * * btnCollapse - `{ui.button}`
+         * 
+         * @method getElement
+         * @param {String}   name       the id of the element to fetch.
+         * @param {Function} [callback] the function to call when the 
+         *     element is available (could be immediately)
+         */
         plugin.freezePublicAPI({
             /**
+             * Toggles the visibility of the search and replace panel.
+             * @param {Number} force  Set to -1 to force hide the panel, 
+             *   or set to 1 to force show the panel.
              */
             toggle : toggleDialog,
 
             /**
-             *
+             * Return the cursor and selection to where it was, prior to 
+             * starting searching.
              */
             restore : restore,
 
             /**
-             *
+             * Find the next occurance of the search query. If wrap around is
+             * turned on, the search will continue from the beginning when it
+             * reaches the end of the file.
+             * @param {Boolean} backwards  When set to true the search direction is reversed.
              */
             findNext : findNext,
 
             /**
-             *
-             */
-            find : find,
-
-            /**
-             *
+             * Replace the next occurance of the query with whatever the user
+             * entered in the replace textbox.
+             * @param {Boolean} backwards  When set to true the search direction is reversed.
              */
             replace : replace,
 
             /**
-             *
+             * Replace all occurences of the query with whatever the user
+             * entered in the replace textbox.
              */
             replaceAll : replaceAll
         });
