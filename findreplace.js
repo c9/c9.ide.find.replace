@@ -1,21 +1,15 @@
-/**
- * Searchreplace Module for the Cloud9 IDE
- *
- * @copyright 2010, Ajax.org B.V.
- * @license GPLv3 <http://www.gnu.org/licenses/gpl.txt>
- */
-
 define(function(require, exports, module) {
     "use strict";
+    
     main.consumes = [
-        "plugin", "settings", "ui", "layout",
-        "anims", "menus", "tabs", "commands", "tooltip", "apf"
+        "Plugin", "settings", "ui", "layout",
+        "anims", "menus", "tabManager", "commands", "tooltip", "apf"
     ];
     main.provides = ["findreplace"];
     return main;
 
     function main(options, imports, register) {
-        var Plugin    = imports.plugin;
+        var Plugin    = imports.Plugin;
         var settings  = imports.settings;
         var ui        = imports.ui;
         var anims     = imports.anims;
@@ -23,7 +17,7 @@ define(function(require, exports, module) {
         var layout    = imports.layout;
         var commands  = imports.commands;
         var tooltip   = imports.tooltip;
-        var tabs      = imports.tabs;
+        var tabs      = imports.tabManager;
         var apf       = imports.apf;
 
         var css       = require("text!./findreplace.css");
@@ -171,9 +165,9 @@ define(function(require, exports, module) {
                 command : "replaceall"
             }), 800, plugin);
             
-            tabs.on("after.activate", function(e){
+            tabs.on("tabAfterActivate", function(e){
                 if (winSearchReplace && winSearchReplace.visible) {
-                    if (e.page && e.page.editor.ace) {
+                    if (e.tab && e.tab.editor.ace) {
                         winSearchReplace.enable();
                         execFind(false, "highlight");
                     }
@@ -296,7 +290,7 @@ define(function(require, exports, module) {
 
             document.body.appendChild(tooltipSearchReplace.$ext);
 
-            chk.regEx.on("prop.value", function(e){
+            chk.regEx.on("propValue", function(e){
                 libsearch.setRegexpMode(txtFind, apf.isTrue(e.value));
             });
 
@@ -333,12 +327,12 @@ define(function(require, exports, module) {
                     tooltip     : tooltipSearchReplace.$ext,
                     animate     : false,
                     getPosition : function(){
-                        var pos = apf.getAbsolutePosition(winSearchReplace.$ext);
+                        var pos = ui.getAbsolutePosition(winSearchReplace.$ext);
                         var left = pos[0] + cb.getLeft();
                         var top = pos[1];
                         return [left, top - 16];
                     }
-                });
+                }, plugin);
             });
         }
 
@@ -376,8 +370,8 @@ define(function(require, exports, module) {
         }
 
         function toggleDialog(force, isReplace, noselect, callback) {
-            var page   = tabs.focussedPage;
-            var editor = page && page.editor;
+            var tab   = tabs.focussedTab;
+            var editor = tab && tab.editor;
 
             draw();
 
@@ -409,7 +403,7 @@ define(function(require, exports, module) {
             else if (winSearchReplace.visible) {
                 txtFind.ace.saveHistory();
                 if (!noselect)
-                    tabs.focusPage(page);
+                    tabs.focusTab(tab);
                 hideUi(null, callback);
             }
             else if (callback)
@@ -499,9 +493,9 @@ define(function(require, exports, module) {
         }
 
         function onHide() {
-            var page = tabs.focussedPage;
-            if (page && page.editor.ace)
-                tabs.focusPage(page);
+            var tab = tabs.focussedTab;
+            if (tab && tab.editor.ace)
+                tabs.focusTab(tab);
         }
 
         function getOptions() {
@@ -684,8 +678,8 @@ define(function(require, exports, module) {
         }
 
         function getAce() {
-            var page = tabs.focussedPage;
-            var editor = page && page.editor;
+            var tab = tabs.focussedTab;
+            var editor = tab && tab.editor;
             return editor && editor.ace;
         }
         
@@ -760,39 +754,68 @@ define(function(require, exports, module) {
         /***** Register and define API *****/
 
         /**
-         * Draws the file tree
-         * @event afterfilesave Fires after a file is saved
-         *   object:
-         *     node     {XMLNode} description
-         *     oldpath  {String} description
-         **/
+         * Implements the search and replace UI for Cloud9 IDE.
+         * @singleton
+         */
+        /**
+         * Fetches a ui element. You can use this method both sync and async.
+         * 
+         * The search in files plugin has the following elements:
+         * 
+         * * txtFind - `{ui.textbox}`
+         * * winSearchReplace - `{ui.window}`
+         * * txtReplace - `{ui.textbox}`
+         * * tooltipSearchReplace - `{ui.label}`
+         * * chkSearchSelection - `{ui.checkbox}`
+         * * chkRegEx - `{ui.checkbox}`
+         * * chkSearchBackwards - `{ui.checkbox}`
+         * * chkWrapAround - `{ui.checkbox}`
+         * * chkMatchCase - `{ui.checkbox}`
+         * * chkWholeWords - `{ui.checkbox}`
+         * * chkPreserveCase - `{ui.checkbox}`
+         * * btnPrev - `{ui.button}`
+         * * btnNext - `{ui.button}`
+         * * btnReplace - `{ui.button}`
+         * * btnReplaceAll - `{ui.button}`
+         * * btnCollapse - `{ui.button}`
+         * 
+         * @method getElement
+         * @param {String}   name       the id of the element to fetch.
+         * @param {Function} [callback] the function to call when the 
+         *     element is available (could be immediately)
+         */
         plugin.freezePublicAPI({
             /**
+             * Toggles the visibility of the search and replace panel.
+             * @param {Number} force  Set to -1 to force hide the panel, 
+             *   or set to 1 to force show the panel.
              */
             toggle : toggleDialog,
 
             /**
-             *
+             * Return the cursor and selection to where it was, prior to 
+             * starting searching.
              */
             restore : restore,
 
             /**
-             *
+             * Find the next occurance of the search query. If wrap around is
+             * turned on, the search will continue from the beginning when it
+             * reaches the end of the file.
+             * @param {Boolean} backwards  When set to true the search direction is reversed.
              */
             findNext : findNext,
 
             /**
-             *
-             */
-            find : find,
-
-            /**
-             *
+             * Replace the next occurance of the query with whatever the user
+             * entered in the replace textbox.
+             * @param {Boolean} backwards  When set to true the search direction is reversed.
              */
             replace : replace,
 
             /**
-             *
+             * Replace all occurences of the query with whatever the user
+             * entered in the replace textbox.
              */
             replaceAll : replaceAll
         });
