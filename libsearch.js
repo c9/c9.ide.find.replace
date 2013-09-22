@@ -142,7 +142,7 @@ module.exports = function(settings, execFind, toggleDialog, restore, toggleOptio
                 apf.setOpacity(tooltip.$ext, 1);
     
                 var pos = apf.getAbsolutePosition(win.$ext);
-                tooltip.$ext.style.left = txtFind.getLeft() + "px";
+                tooltip.$ext.style.left = pos[0] + txtFind.getLeft() + "px";
                 tooltip.$ext.style.top = (pos[1] - 16) + "px";
     
                 this.tooltipTimer = setTimeout(function(){
