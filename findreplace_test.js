@@ -56,7 +56,7 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
         
         // Mock plugins
         {
-            consumes : ["apf", "ui"],
+            consumes : ["apf", "ui", "Plugin"],
             provides : [
                 "commands", "menus", "layout", "watcher", 
                 "save", "preferences", "clipboard"
