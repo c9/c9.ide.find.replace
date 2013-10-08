@@ -5,7 +5,7 @@
             .btnquicksearchnav {
                 height             : 22px;
                 cursor             : pointer;
-                position           : relative;
+                position           : absolute;
                 -moz-user-select   : none;
                 -khtml-user-select : none;
                 user-select        : none;
