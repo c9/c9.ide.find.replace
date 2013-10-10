@@ -62,7 +62,7 @@ define(function(require, exports, module) {
             loaded = true;
 
             function isSupported(editor){
-                if (apf.activeElement == txtFind || apf.activeElement == txtReplace)
+                if (apf.activeElement === txtFind || apf.activeElement === txtReplace)
                     return true;
                 return editor && editor.ace;
             }
