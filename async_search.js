@@ -72,7 +72,7 @@ define(function(require, exports, module) {
         var msg = e.data;
         var id = msg.callbackId;
         $worker.responseTime = Date.now();
-        console.log(id, callbacks)
+        // console.log(id, callbacks)
         if (id && callbacks[id]) {
             if (id == callbackId)
                 callbacks[id](msg);
