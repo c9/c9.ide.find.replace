@@ -51,7 +51,6 @@ module.exports = function(settings, execFind, toggleDialog, restore, toggleOptio
                 }
             });
             
-            
             function optionCommand(name, key) {
                 return {
                     bindKey: {
@@ -96,6 +95,9 @@ module.exports = function(settings, execFind, toggleDialog, restore, toggleOptio
                 lines = this.saveHistory(value, listName);
                 this.position = 0;
             }
+            
+            if (this.position === undefined)
+                this.position = -1;
     
             var next;
             if (type == "prev") {
@@ -114,7 +116,7 @@ module.exports = function(settings, execFind, toggleDialog, restore, toggleOptio
             else if (type == "first")
                 next = 0;
     
-            if (lines[next] && next != this.position) {
+            if (next in lines && next != this.position) {
                 codebox.setValue(lines[next], true);
                 this.keyStroke = "";
                 this.position = next;
@@ -124,7 +126,7 @@ module.exports = function(settings, execFind, toggleDialog, restore, toggleOptio
         saveHistory : function(searchTxt, listName){
             var json = settings.getJson(prefix + listName) || [];
     
-            if (json[0] != searchTxt) {
+            if (searchTxt && json[0] != searchTxt) {
                 json.unshift(searchTxt);
                 settings.setJson(prefix + listName, json);
             }
