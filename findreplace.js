@@ -184,12 +184,8 @@ define(function(require, exports, module) {
             if (drawn) return;
             drawn = true;
 
-            css = css
-                .replace(/icons\//g, options.staticPrefix + "/icons/")
-                .replace(/images\//g, options.staticPrefix + "/images/");
-
             // Import CSS
-            ui.insertCss(css, plugin);
+            ui.insertCss(css, options.staticPrefix, plugin);
 
             // Import Skin
             ui.insertSkin({
