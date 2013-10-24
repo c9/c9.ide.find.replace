@@ -208,15 +208,16 @@ define(function(require, exports, module) {
             if (re.range && !re.indexRange) {
                 re.indexRange = this.rangeToIndex(re.range);
             }
+            clearTimeout(this.crashTimer);
             var all = this.results[re.id];
             if (!all) {                
                 this.getMatchOffsets(re, function(data) {
-                    clearTimeout(timer);
+                    clearTimeout(this.crashTimer);
                     this.results[re.id] = data.matches;
                     cb(data.matches);
                 }.bind(this));
-                // invalid regex might
-                var timer = setTimeout(function() {
+                // invalid regex can crash the worker
+                this.crashTimer = setTimeout(function() {
                     cb();
                 }, 500);
             } else

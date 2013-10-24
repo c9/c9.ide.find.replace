@@ -165,7 +165,7 @@ define(function(require, exports, module) {
                 command : "replaceall"
             }), 800, plugin);
             
-            tabs.on("tabAfterActivate", function(e){
+            tabs.on("focus", function(e){
                 if (winSearchReplace && winSearchReplace.visible) {
                     if (e.tab && e.tab.editor.ace) {
                         winSearchReplace.enable();
@@ -174,6 +174,7 @@ define(function(require, exports, module) {
                     else {
                         winSearchReplace.disable();
                         btnCollapse.enable();
+                        updateCounter();
                     }
                 }
             });
