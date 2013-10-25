@@ -19,6 +19,7 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
         "plugins/c9.core/http",
         "plugins/c9.core/util",
         "plugins/c9.ide.ui/lib_apf",
+        "plugins/c9.ide.ui/menus",
         {
             packagePath : "plugins/c9.core/settings",
             settings    : "<settings><user><general animateui='true' /></user></settings>"
@@ -58,7 +59,7 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
         {
             consumes : ["apf", "ui", "Plugin"],
             provides : [
-                "commands", "menus", "layout", "watcher", 
+                "commands", "menus", "watcher", 
                 "save", "preferences", "clipboard",
                 "dialog.alert", "auth.bootstrap"
             ],
@@ -78,6 +79,7 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
                         }, {addElement: function(){}});
                         
                         return {
+                            initMenus: function() {},
                             findParent : function(){
                                 if (!bar) {
                                     bar = apf.document.documentElement.appendChild(
