@@ -19,10 +19,10 @@
 }
 
 .btnquicksearchnav.btnquicksearchnavLeft .lbl span {
-    background-image: url("icons/arrow_left_search.png");
+    background-image: url("@{icon-path}/arrow_left_search.png");
 }
 .btnquicksearchnav.btnquicksearchnavRight .lbl span {
-    background-image: url("icons/arrow_right_search.png");
+    background-image: url("@{icon-path}/arrow_right_search.png");
 }
 
 .findInRangeMarker {

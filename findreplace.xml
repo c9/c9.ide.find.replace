@@ -1,6 +1,6 @@
 <a:application xmlns:a="http://ajax.org/2005/aml">
     <a:label id="tooltipSearchReplace" skin="tooltipLabel" visible="false" />
-    <a:bar id="winSearchReplace" skin="basic" skinset="searchreplace" focussable="container" zindex="1000" minheight="0" visible="false" height="0">
+    <a:bar id="winSearchReplace" skinset="searchreplace" focussable="container" zindex="1000" minheight="0" visible="false" height="0">
         <div id="divSearchCount"></div>
         <a:button id="btnPrev"
           skin       = "btnquicksearchnav" 
