@@ -5,7 +5,7 @@
     right: 47px;
     top: 5px;
     z-index : 100;
-    color: #aaa;
+    color: @find-search-count-color;
     font-size: 11px;
     height: 19px;
     line-height: 19px;
@@ -19,13 +19,13 @@
 }
 
 .btnquicksearchnav.btnquicksearchnavLeft .lbl span {
-    background-image: url("@{icon-path}/arrow_left_search.png");
+    background-image: url("@{icon-path}/@{find-next-image}");
 }
 .btnquicksearchnav.btnquicksearchnavRight .lbl span {
-    background-image: url("@{icon-path}/arrow_right_search.png");
+    background-image: url("@{icon-path}/@{find-previous-image}");
 }
 
 .findInRangeMarker {
     position: absolute;
-    background-color: rgba(133, 133, 133, 0.27)
+    background-color: @find-range-marker-color;
 }
