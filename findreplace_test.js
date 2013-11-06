@@ -146,7 +146,15 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
                 var findreplace = window.app.services.findreplace;
                 var commands = window.app.services.commands;
                 it('should open a pane with just an editor', function(done) {
-                    tabs.openFile("nofile.md", function(err, page_){
+                    tabs.open({
+                        path: "/nofile.md",
+                        value: "",
+                        document: {
+                            meta: {
+                                newfile: true
+                            }
+                        }
+                    }, function(err, page_){
                         expect(tabs.getTabs()).length(1);
                         tab = tabs.getTabs()[0];
                         ace = tab.editor.ace;
