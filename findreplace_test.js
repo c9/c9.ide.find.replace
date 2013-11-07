@@ -1,5 +1,7 @@
 /*global describe it before after  =*/
 
+"use client";
+
 require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout.classic/skins.xml"], function (architect, chai, skin) {
     var expect = chai.expect;
     var bar;
