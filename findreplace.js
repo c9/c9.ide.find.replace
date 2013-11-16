@@ -302,6 +302,14 @@ define(function(require, exports, module) {
                 }, 20);
             });
             
+            txtFind.ace.commands.on("exec", function(e) {
+                if (/centerselection|fold/i.test(e.command.name)) {
+                    getAce().execCommand(e.command.name);
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+            });
+            
             initFindInRange();
 
             emit("draw");
