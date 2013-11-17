@@ -78,11 +78,7 @@ define(function(require, exports, module) {
                     hint        : "search for a string inside the active document and replace it",
                     isAvailable : isSupportedRW,
                     exec        : function(env, args, request){
-                        var force = apf.activeElement
-                          && ui.isChildOf(winSearchReplace, apf.activeElement)
-                            ? false : true;
-
-                        toggleDialog(force, true);
+                        toggleDialog(1, true);
                     }
                 }, 
                 replaceall: {
@@ -124,11 +120,7 @@ define(function(require, exports, module) {
                     bindKey     : { mac: "Command-F", win: "Ctrl-F" },
                     isAvailable : isSupported,
                     exec        : function(env, args, request) {
-                        var force = apf.activeElement
-                          && ui.isChildOf(winSearchReplace, apf.activeElement)
-                            ? false : true;
-
-                        toggleDialog(force, false);
+                        toggleDialog(1, false);
                     }
                 },
                 hidesearchreplace: {
