@@ -106,11 +106,7 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
             provides : [],
             setup    : main
         }
-    ], function (err, config) {
-        if (err) throw err;
-        var app = window.app = architect.createApp(config);
-        app.on("service", function(name, plugin){ plugin.name = name; });
-    });
+    ], expect.setUpArchitectTest(architect));
     
     function main(options, imports, register) {
         var tabs        = imports.tabManager;
@@ -145,8 +141,6 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
             
             describe("open", function(){
                 var ace, tab;
-                var findreplace = window.app.services.findreplace;
-                var commands = window.app.services.commands;
                 it('should open a pane with just an editor', function(done) {
                     tabs.open({
                         path: "/nofile.md",
