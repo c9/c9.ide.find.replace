@@ -6,7 +6,7 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
     var expect = chai.expect;
     var bar;
     
-    architect.resolveConfig([
+    expect.setupArchitectTest([
         {
             packagePath : "plugins/c9.core/c9",
             workspaceId : "ubuntu/ip-10-35-77-180",
@@ -106,7 +106,7 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
             provides : [],
             setup    : main
         }
-    ], expect.setUpArchitectTest(architect));
+    ], architect);
     
     function main(options, imports, register) {
         var tabs        = imports.tabManager;
