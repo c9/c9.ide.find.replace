@@ -295,7 +295,7 @@ define(function(require, exports, module) {
             });
             
             txtFind.ace.commands.on("exec", function(e) {
-                if (/centerselection|fold/i.test(e.command.name)) {
+                if (/centerselection|fold|comment/i.test(e.command.name)) {
                     getAce().execCommand(e.command.name);
                     e.preventDefault();
                     e.stopPropagation();
