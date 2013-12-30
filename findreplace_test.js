@@ -97,7 +97,8 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
                                 }
                                 
                                 return bar;
-                            }
+                            },
+                            on: function() {}
                         };
                     })()
                 });
