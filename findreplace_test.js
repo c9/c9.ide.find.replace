@@ -65,7 +65,7 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
             provides : [
                 "commands", "menus", "watcher", 
                 "save", "preferences", "clipboard",
-                "dialog.alert", "auth.bootstrap", "info"
+                "dialog.alert", "auth.bootstrap", "info", "dialog.error"
             ],
             setup    : expect.html.mocked
         },
