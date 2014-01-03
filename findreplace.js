@@ -36,7 +36,7 @@ define(function(require, exports, module) {
 
         var libsearch = lib(settings, execFind, toggleDialog, restore, toggleOption);
 
-        var findinfiles, searchRow, txtFind, winSearchReplace, txtReplace;
+        var searchRow, txtFind, winSearchReplace, txtReplace;
         var tooltipSearchReplace, divSearchCount; 
         var btnPrev, btnNext, btnReplace, btnReplaceAll, hbox, btnCollapse;
         var chk = {};
@@ -191,9 +191,6 @@ define(function(require, exports, module) {
             // Create UI elements
             searchRow = layout.findParent(plugin);
             ui.insertMarkup(null, markup, plugin);
-
-            // Get ref to find in files
-            findinfiles = lib.findinfiles;
 
             txtFind              = plugin.getElement("txtFind");
             winSearchReplace     = plugin.getElement("winSearchReplace");
@@ -418,16 +415,9 @@ define(function(require, exports, module) {
             searchRow.appendChild(winSearchReplace);
             winSearchReplace.show();
 
-            var winFindInFiles;
-            try{
-                winFindInFiles = findinfiles.getElement("winSearchInFiles");
-            } catch(e) {}
-            if (winFindInFiles && winFindInFiles.visible) {
-                findinfiles.toggle(-1, null, true, function(){
-                    showUi(callback);
-                });
-                return;
-            }
+            if (layout.clearFindArea(plugin, function(){
+                showUi(callback);
+            })) return;
 
             anims.animateSplitBoxNode(winSearchReplace, {
                 height         : winSearchReplace.$ext.scrollHeight + "px",
@@ -782,6 +772,11 @@ define(function(require, exports, module) {
          *     element is available (could be immediately)
          */
         plugin.freezePublicAPI({
+            /**
+             * 
+             */
+            get aml(){ return winSearchReplace; },
+            
             /**
              * Toggles the visibility of the search and replace panel.
              * @param {Number} force  Set to -1 to force hide the panel, 
