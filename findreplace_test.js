@@ -83,6 +83,7 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
                         }, {addElement: function(){}});
                         
                         return {
+                            proposeLayoutChange: function(){},
                             initMenus: function() {},
                             clearFindArea: function(){},
                             findParent : function(){
