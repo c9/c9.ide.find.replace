@@ -463,7 +463,7 @@ define(function(require, exports, module) {
 
                 callback
                     ? callback()
-                    : ui.layout.forceResize();
+                    : ui.layout.forceResize(null, true);
             }
 
             btnCollapse.setValue(0);
