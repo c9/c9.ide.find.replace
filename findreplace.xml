@@ -16,20 +16,20 @@
           top        = "2"
           focussable = "false"
           zindex     = "100"/>
-        <a:hbox id="hbox" class="find-and-replace" padding="5" edge="5" model="{settings.model}">
+        <a:hbox id="hbox" class="find-and-replace" padding="5" edge="5">
             <a:hbox class="grouped_checkbox_holder" align="start" height="27">
-                <a:checkbox id="chkRegEx" value="[state/ace/search/@regex]" class="chkRegEx" label="Regular Expressions" skin="grouped_checkbox" width="27" />
-                <a:checkbox id="chkMatchCase" value="[state/ace/search/@matchcase]" class="chkMatchCase" label="Match Case" skin="grouped_checkbox" width="27" />
-                <a:checkbox id="chkWholeWords" value="[state/ace/search/@wholeword]" class="chkWholeWords" label="Whole Words" skin="grouped_checkbox" width="27" />
+                <a:checkbox id="chkRegEx" value="state/ace/search/@regex" class="chkRegEx" label="Regular Expressions" skin="grouped_checkbox" width="27" />
+                <a:checkbox id="chkMatchCase" value="state/ace/search/@matchcase" class="chkMatchCase" label="Match Case" skin="grouped_checkbox" width="27" />
+                <a:checkbox id="chkWholeWords" value="state/ace/search/@wholeword" class="chkWholeWords" label="Whole Words" skin="grouped_checkbox" width="27" />
             </a:hbox>
             <a:hbox class="grouped_checkbox_holder" align="start" height="27">
-                <a:checkbox id="chkSearchBackwards" value="[state/ace/search/@backwards]" class="chkSearchBackwards" label="Search Backwards" skin="grouped_checkbox" width="27" />
-                <a:checkbox id="chkWrapAround" value="[state/ace/search/@wraparound]" class="chkWrapAround" label="Wrap Around" skin="grouped_checkbox" width="27" />
+                <a:checkbox id="chkSearchBackwards" value="state/ace/search/@backwards" class="chkSearchBackwards" label="Search Backwards" skin="grouped_checkbox" width="27" />
+                <a:checkbox id="chkWrapAround" value="state/ace/search/@wraparound" class="chkWrapAround" label="Wrap Around" skin="grouped_checkbox" width="27" />
                 <a:checkbox id="chkSearchSelection" class="chkSearchSelection" label="Search Selection" skin="grouped_checkbox" width="27" />
             </a:hbox>
             <a:codebox id="txtFind" tabindex="1000" flex="3" skin="codebox" initial-message="Find" focusselect="true" class="buttonsright" />
             <a:hbox class="grouped_checkbox_holder" height="27">
-                <a:checkbox id="chkPreserveCase" value="[state/ace/search/@preservecase]" class="single chkPreserveCase" label="Preserve Case" skin="grouped_checkbox" width="27" />
+                <a:checkbox id="chkPreserveCase" value="state/ace/search/@preservecase" class="single chkPreserveCase" label="Preserve Case" skin="grouped_checkbox" width="27" />
             </a:hbox>
             <a:codebox id="txtReplace" tabindex="1001" skin="codebox" margin="0 -1 0 0"  flex="1" initial-message="Replace With" focusselect="true" />
             <a:button margin="0 -2 0 0" skin="blackbutton" id="btnReplace" height="27">Replace</a:button>
