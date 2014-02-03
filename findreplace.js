@@ -281,6 +281,22 @@ define(function(require, exports, module) {
             });
 
             decorateCheckboxes(hbox);
+            
+            [txtReplace].forEach(function(node){
+                tooltip.add(node.$ext, {
+                    message : node.label,
+                    width   : "auto",
+                    timeout : 0,
+                    tooltip : tooltipSearchReplace.$ext,
+                    animate : false,
+                    getPosition : function(){
+                        var pos = ui.getAbsolutePosition(winSearchReplace.$ext);
+                        var left = pos[0] + node.getLeft();
+                        var top = pos[1];
+                        return [left, top - 16];
+                    }
+                }, plugin);
+            });
 
             libsearch.addSearchKeyboardHandler(txtFind, "search");
             txtFind.ace.session.on("change", function(e) {
