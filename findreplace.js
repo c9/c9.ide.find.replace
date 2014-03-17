@@ -234,7 +234,10 @@ define(function(require, exports, module) {
                     anim     : apf.tween.easeOutCubic,
                     control  : control,
                     steps    : 15,
-                    interval : 1
+                    interval : 1,
+                    onfinish : function(){
+                        ui.layout.forceResize(null, true);
+                    }
                 });
             });
             txtReplace.on("blur", function(){
@@ -252,7 +255,10 @@ define(function(require, exports, module) {
                     anim     : apf.tween.easeOutCubic,
                     control  : control,
                     steps    : 15,
-                    interval : 1
+                    interval : 1,
+                    onfinish : function(){
+                        ui.layout.forceResize(null, true);
+                    }
                 });
             });
 
