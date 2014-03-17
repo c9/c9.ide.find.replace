@@ -290,9 +290,10 @@ define(function(require, exports, module) {
                     tooltip : tooltipSearchReplace.$ext,
                     animate : false,
                     getPosition : function(){
-                        var pos = ui.getAbsolutePosition(winSearchReplace.$ext);
-                        var left = pos[0] + node.getLeft();
-                        var top = pos[1];
+                        var pos  = ui.getAbsolutePosition(winSearchReplace.$ext);
+                        var pos2 = ui.getAbsolutePosition(node.$ext, winSearchReplace.$ext);
+                        var left = pos[0] + pos2[0];
+                        var top  = pos[1];
                         return [left, top - 16];
                     }
                 }, plugin);
