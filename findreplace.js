@@ -449,6 +449,8 @@ define(function(require, exports, module) {
             }, function() {
                 winSearchReplace.$ext.style.height = "";
                 divSearchCount.$ext.style.visibility = "";
+                
+                ui.layout.forceResize(null, true);
             });
 
             btnCollapse.setValue(1);
