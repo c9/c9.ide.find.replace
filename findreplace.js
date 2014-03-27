@@ -586,7 +586,7 @@ define(function(require, exports, module) {
             if (options.range && type != "highlight")
                 addFindInRangeMarker(options.range, ace.session);
             else
-                removeFindInRangeMarker(null, true);
+                removeFindInRangeMarker(true);
             
             var re = ace.$search.$assembleRegExp(options, true);
             if (!re) {
@@ -718,7 +718,7 @@ define(function(require, exports, module) {
             return marker = {start: start, end: end, session: session};
         }
         
-        function removeFindInRangeMarker(m, reset) {
+        function removeFindInRangeMarker(reset) {
             if (!marker) return;
             var session = marker.session;
             session.removeMarker(marker.start.id);
@@ -747,12 +747,12 @@ define(function(require, exports, module) {
                 if (chk.searchSelection.checked)
                     addFindInRangeMarker(getOptions().range, ace.session);
                 else
-                    removeFindInRangeMarker(marker, true);
+                    removeFindInRangeMarker(true);
                 currentRange = null;
             });
             winSearchReplace.addEventListener("blur", function(e) {
                 if (marker) {
-                    removeFindInRangeMarker(marker);
+                    removeFindInRangeMarker();
                     marker = null;
                 }
             });
