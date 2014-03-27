@@ -528,6 +528,9 @@ define(function(require, exports, module) {
                 startPos.searchRange =
                 options.range = range || startPos.searchRange;
             }
+            else {
+                options.range = null;
+            }
 
             return options;
         }
