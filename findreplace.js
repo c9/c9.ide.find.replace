@@ -375,8 +375,10 @@ define(function(require, exports, module) {
         }
 
         function setStartPos(ace){
-            startPos.searchRange = 
-            startPos.range = ace.getSelectionRange();
+            if (!startPos.searchRange) {
+                startPos.searchRange = 
+                startPos.range = ace.getSelectionRange();
+            }
             startPos.scrollTop = ace.session.getScrollTop();
             startPos.scrollLeft = ace.session.getScrollLeft();
         }
@@ -584,7 +586,7 @@ define(function(require, exports, module) {
             if (options.range && type != "highlight")
                 addFindInRangeMarker(options.range, ace.session);
             else
-                removeFindInRangeMarker();
+                removeFindInRangeMarker(null, true);
             
             var re = ace.$search.$assembleRegExp(options, true);
             if (!re) {
@@ -716,7 +718,7 @@ define(function(require, exports, module) {
             return marker = {start: start, end: end, session: session};
         }
         
-        function removeFindInRangeMarker() {
+        function removeFindInRangeMarker(m, reset) {
             if (!marker) return;
             var session = marker.session;
             session.removeMarker(marker.start.id);
@@ -725,6 +727,11 @@ define(function(require, exports, module) {
             marker.start.end.detach();
             marker.end.start.detach();
             marker = null;
+            
+            if (reset) {
+                delete startPos.searchRange;
+                delete startPos.range;
+            }
         }
         
         function initFindInRange() {
@@ -740,7 +747,7 @@ define(function(require, exports, module) {
                 if (chk.searchSelection.checked)
                     addFindInRangeMarker(getOptions().range, ace.session);
                 else
-                    removeFindInRangeMarker(marker);
+                    removeFindInRangeMarker(marker, true);
                 currentRange = null;
             });
             winSearchReplace.addEventListener("blur", function(e) {
