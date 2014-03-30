@@ -642,6 +642,14 @@ define(function(require, exports, module) {
             }
 
             if (lastSearchOptions) {
+                if (chk.searchSelection.checked) {
+                    chk.searchSelection.uncheck();
+                    removeFindInRangeMarker(true);
+                    delete lastSearchOptions.range;
+                    delete lastSearchOptions.indexRange;
+                    marker = null;
+                }
+                
                 lastSearchOptions.backwards = backwards;
                 execFind(null, true, lastSearchOptions);
             } else
@@ -719,7 +727,13 @@ define(function(require, exports, module) {
         }
         
         function removeFindInRangeMarker(reset) {
+            if (reset) {
+                delete startPos.searchRange;
+                delete startPos.range;
+            }
+            
             if (!marker) return;
+            
             var session = marker.session;
             session.removeMarker(marker.start.id);
             session.removeMarker(marker.end.id);
@@ -727,11 +741,6 @@ define(function(require, exports, module) {
             marker.start.end.detach();
             marker.end.start.detach();
             marker = null;
-            
-            if (reset) {
-                delete startPos.searchRange;
-                delete startPos.range;
-            }
         }
         
         function initFindInRange() {
