@@ -531,7 +531,6 @@ define(function(require, exports, module) {
                 options.range = range || startPos.searchRange;
             }
             else {
-                debugger;
                 options.range = null;
             }
 
@@ -729,7 +728,6 @@ define(function(require, exports, module) {
         
         function removeFindInRangeMarker(reset) {
             if (reset) {
-                debugger;
                 delete startPos.searchRange;
                 delete startPos.range;
             }
