@@ -531,6 +531,7 @@ define(function(require, exports, module) {
                 options.range = range || startPos.searchRange;
             }
             else {
+                debugger;
                 options.range = null;
             }
 
@@ -586,7 +587,7 @@ define(function(require, exports, module) {
             if (options.range && type != "highlight")
                 addFindInRangeMarker(options.range, ace.session);
             else
-                removeFindInRangeMarker(true);
+                removeFindInRangeMarker(type != "highlight");
             
             var re = ace.$search.$assembleRegExp(options, true);
             if (!re) {
@@ -728,6 +729,7 @@ define(function(require, exports, module) {
         
         function removeFindInRangeMarker(reset) {
             if (reset) {
+                debugger;
                 delete startPos.searchRange;
                 delete startPos.range;
             }
