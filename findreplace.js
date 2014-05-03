@@ -285,6 +285,7 @@ define(function(require, exports, module) {
             chk.regEx.on("prop.value", function(e){
                 libsearch.setRegexpMode(txtFind, apf.isTrue(e.value));
             });
+            libsearch.setRegexpMode(txtFind, chk.regEx.checked);
 
             decorateCheckboxes(hbox);
             
