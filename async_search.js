@@ -107,6 +107,9 @@ define(function(require, exports, module) {
             if (!all)
                 return cb("waiting");
             
+            if (options.findAll)
+                return cb({value: st.value, matches: all});
+            
             // preprocess options
             var backwards = options.backwards === true;
             var skipCurrent = options.skipCurrent !== false;
@@ -121,7 +124,7 @@ define(function(require, exports, module) {
                 start = start[skipCurrent != backwards ? "end" : "start"];
                 
             if (!options.regex)
-                options.regex = RegExp(options.source, options.flags);   
+                options.regex = RegExp(options.source, options.flags);
             
             // find in range
             var offset = options.indexRange ? options.indexRange[0] : 0;

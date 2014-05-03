@@ -520,9 +520,9 @@ define(function(require, exports, module) {
                 wholeWord     : chk.wholeWords.checked,
                 regExp        : chk.regEx.checked
             };
-
+            var ace = getAce();
             if (chk.searchSelection.checked) {
-                var range = getAce().getSelectionRange();
+                var range = ace.getSelectionRange();
                 var isValid = range.isMultiLine() || range.end.column - range.start.column > 10;
                 if (!isValid || currentRange && range.isEqual(currentRange))
                     range = null;
@@ -533,6 +533,9 @@ define(function(require, exports, module) {
             else {
                 options.range = null;
             }
+            var newLineMode = ace.session.getNewLineMode();
+            txtFind.ace.session.setNewLineMode(newLineMode);
+            txtReplace.ace.session.setNewLineMode(newLineMode);
 
             return options;
         }
@@ -666,18 +669,20 @@ define(function(require, exports, module) {
             if (!ace)
                 return;
 
-            var strReplace = processEscapes(txtReplace.getValue());
-
             var txt = ace.getCopyText();
             var options = getOptions();
             options.needle = txtFind.getValue();
-            ace.$search.set(options);
-            ace.$search.set({preserveCase: chk.preserveCase.checked});
-            strReplace = ace.$search.replace(txt, strReplace);
-            if (typeof strReplace == "string")
-                ace.insert(strReplace);
-            findNext(backwards);
             
+            var re = ace.$search.$assembleRegExp(options, true);
+            var match = re.exec(txt);
+            var replaceFn = getReplaceFunction(options);
+            if (match && match[0].length == txt.length) {
+                var replacement = replaceFn(match, re, txt);
+                if (txt != replacement)
+                    ace.insert(replacement);
+            }
+            
+            findNext(backwards);
             txtReplace.ace.saveHistory();
         }
 
@@ -688,11 +693,81 @@ define(function(require, exports, module) {
 
             var options = getOptions();
             options.needle = txtFind.getValue();
-            var strReplace = processEscapes(txtReplace.getValue());
-            ace.replaceAll(strReplace, options);
-            updateCounter();
+            var re = ace.$search.$assembleRegExp(options, true);
+            if (!re) {
+                return updateCounter();
+            }
+            options.re = re;
+            options.source = re.source;
+            options.flags = re.ignoreCase ? "igm" : "gm";
+            options.findAll = true;
+            
+            var replaceFn = getReplaceFunction(options);
+            ace.$search.set({preserveCase: chk.preserveCase.checked});
+            
+            asyncSearch.execFind(ace.session, options , function(result) {
+                var replaced = 0;
+                var indexArray = result.matches;
+                var value = result.value;
+                var re = options.re;
+                if (!indexArray.length)
+                    return replaced;
+        
+                ace.$blockScrolling += 1;
+                var doc = ace.session.doc;
+
+                var startPos = {row: 0, column: 0};
+                var endPos = {row: 0, column: 0};
+                var start = 0, end = 0, offset = 0;
+                var range = new Range();
+                for (var i = 0; i < indexArray.length; i++) {
+                    var index = indexArray[i];
+                    re.lastIndex = index;
+                    var match = re.exec(value);
+                    var txt = match[0];
+                    var len = txt.length;
+                    startPos = doc.indexToPosition(index + offset - start + startPos.column, startPos.row);
+                    start = index + offset;
+                    end = index + len + offset;
+                    endPos = doc.indexToPosition(end - start + startPos.column, startPos.row);
+                    range.start = startPos;
+                    range.end = endPos;
+                    var replacement = replaceFn(match, re, txt);
+                    if (txt != replacement) {
+                        doc.replace(range, replacement);
+                        offset += replacement.length - txt.length;
+                    }
+                }
+        
+                ace.$blockScrolling -= 1;
+                updateCounter();
+            });
             
             txtReplace.ace.saveHistory();
+        }
+        
+        function getReplaceFunction(options) {
+            var val = txtReplace.getValue();
+            var strReplace = processEscapes(val);
+            options.preserveCase = chk.preserveCase.checked;
+            
+            var replaceMode = options.replaceMode || "js";
+            
+            if (replaceMode == "js") {
+                if (strReplace.indexOf("$") == -1) {
+                    return function() { return strReplace };
+                } else {
+                    return function(match, re, txt) {
+                        return txt.replace(re, strReplace);
+                    };
+                }
+            }
+            
+            if (replaceMode == "literal")
+                return function() { return val };
+            // TODO support \U etc
+            // if (replaceMode == "extended")
+            //     return function() { return val };
         }
 
         function processEscapes(str) {
