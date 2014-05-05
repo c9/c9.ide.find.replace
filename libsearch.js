@@ -8,6 +8,10 @@
 define(function(require, exports, module) {
 
 var prefix = "state/search-history/";
+var TextMode = require("ace/mode/text").Mode;
+var Tokenizer = require("ace/tokenizer").Tokenizer;
+var HashHandler = require("ace/keyboard/hash_handler").HashHandler;
+var TextHighlightRules = require("ace/mode/text_highlight_rules").TextHighlightRules;
 
 module.exports = function(settings, execFind, toggleDialog, restore, toggleOption) {
     return {
@@ -17,8 +21,6 @@ module.exports = function(settings, execFind, toggleDialog, restore, toggleOptio
             txtFind.ace.saveHistory = function() {
                 _self.saveHistory(this.getValue(), this.session.listName);
             };
-            
-            var HashHandler = require("ace/keyboard/hash_handler").HashHandler;
     
             txtFind.ace.session.listName = type;
             var iSearchHandler = new HashHandler();
@@ -158,7 +160,46 @@ module.exports = function(settings, execFind, toggleDialog, restore, toggleOptio
     
             return true;
         },
-    
+        
+        setReplaceFieldMode : function(txtFind, mode) {
+            var session = txtFind.ace.session;
+            if (session.$modeId == mode)
+                return;
+            var textMode = new TextMode();
+            textMode.$highlightRules = new textMode.HighlightRules();
+            var rules = {
+                "literal" : [
+                    {defaultToken: "text"}
+                ],
+                "jsOnly" : [
+                    {token : "constant.language.escape", regex : /\$[\d&\$]|\\[\\nrt]/},
+                ],
+                "extended" : [
+                    {token : "constant.language.escape", regex : /\$\$|\\[\\nrt]/},
+                    {token : "string", regex : /\\\d|\$[\d&]/},
+                    {token : "keyword", regex : /\\U/, next  : "uppercase"},
+                    {token : "keyword", regex : /\\L/, next  : "lowercase"},
+                    {token : "keyword", regex : /\\E/, next  : "start"},
+                    {token : "keyword", regex : /\\[ul]/, next  : "uppercase"},
+                ],
+                "uppercase" : [
+                    {include : "extended"},
+                    {defaultToken : "uppercase"}
+                ],
+                "lowercase" : [
+                    {include : "extended"},
+                    {defaultToken : "lowercase"}
+                ]
+            };
+            
+            rules.start = rules[mode] || rules.literal;
+            textMode.$highlightRules.$rules = rules;
+            textMode.$highlightRules.normalizeRules();
+            
+            session.setMode(textMode);
+            session.$modeId = mode;
+        },
+        
         setRegexpMode : function(txtFind, isRegexp) {
             var tokenizer = {}, _self = this;
             tokenizer.getLineTokens = isRegexp

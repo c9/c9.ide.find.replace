@@ -286,6 +286,8 @@ define(function(require, exports, module) {
                 libsearch.setRegexpMode(txtFind, apf.isTrue(e.value));
             });
             libsearch.setRegexpMode(txtFind, chk.regEx.checked);
+            
+            libsearch.setReplaceFieldMode(txtReplace, "extended");
 
             decorateCheckboxes(hbox);
             
@@ -749,33 +751,83 @@ define(function(require, exports, module) {
         
         function getReplaceFunction(options) {
             var val = txtReplace.getValue();
-            var strReplace = processEscapes(val);
             options.preserveCase = chk.preserveCase.checked;
             
-            var replaceMode = options.replaceMode || "js";
-            
-            if (replaceMode == "js") {
-                if (strReplace.indexOf("$") == -1) {
-                    return function() { return strReplace };
-                } else {
-                    return function(match, re, txt) {
-                        return txt.replace(re, strReplace);
-                    };
-                }
-            }
-            
-            if (replaceMode == "literal")
+            if (options.replaceMode == "literal")
                 return function() { return val };
-            // TODO support \U etc
-            // if (replaceMode == "extended")
-            //     return function() { return val };
-        }
+            
+            var fmtParts = [];
+            function add(p) {
+                var last = fmtParts.length - 1;
+                if (!p) return;
+                if (typeof p == "string" && typeof fmtParts[last] == "string")
+                    fmtParts[last] += p;
+                else
+                    fmtParts.push(p);
+            }
+            var lut = {n: "\n", t: "\t", r: "\r", "&": 0, U: -1, L: -2, E: -3, u: -4, l: -5};
+            var re = /\$([\$&\d])|\\([\\ULulEntr\d])/g;
+            var index = 0, m;
+            while ((m = re.exec(val))) {
+                add(val.substring(index, m.index));
+                index = re.lastIndex;
+                var part = m[1] || m[2];
+                if (/\d/.test(part))
+                    part = parseInt(part, 10);
+                else if (part in lut)
+                    part = lut[part];
+                add(part);
+            }
+            add(val.substr(index));
+            
+            if (fmtParts.length == 1 && !options.preserveCase)
+                return function() { return val };
 
-        function processEscapes(str) {
-            var lut = {"n": "\n", "t": "\t", "r": "\r"};
-            return str.replace(/(\\\\)+|\\([ntr])/g, function(m, m1, m2) {
-                return m1 || lut[m2];
-            });
+            return function(match) {
+                var gChangeCase = 0;
+                var changeCase = 0;
+                var result = "";
+                for (var i = 0; i < fmtParts.length; i++) {
+                    var ch = fmtParts[i];
+                    if (typeof ch === "number") {
+                        if (ch <= 0) {
+                            switch (ch) {
+                                case -1: gChangeCase = 1; break;
+                                case -2: gChangeCase = 2; break;
+                                case -3: gChangeCase = 0; break;
+                                case -4: changeCase = 1; break;
+                                case -5: changeCase = 2; break;
+                            }
+                            continue;
+                        }
+                        ch = match[ch] || "";
+                    }
+                    if (gChangeCase)
+                        ch = gChangeCase === 1 ? ch.toUpperCase() : ch.toLowerCase();
+                    if (changeCase && ch) {
+                        result += changeCase === 1 ? ch[0].toUpperCase() : ch[0].toLowerCase();
+                        ch = ch.substr(1);
+                        changeCase = 0;
+                    }
+                    
+                    result += ch;
+                }
+                
+                if (options.preserveCase) {
+                    var input = match[0];
+                    var replacement = result.split("");
+                    for (var i = Math.min(input.length, input.length); i--; ) {
+                        var ch = input[i];
+                        if (ch && ch.toLowerCase() != ch)
+                            replacement[i] = replacement[i].toUpperCase();
+                        else
+                            replacement[i] = replacement[i].toLowerCase();
+                    }
+                    result = replacement.join("");
+                }
+                
+                return result;
+            };
         }
 
         function getAce() {
