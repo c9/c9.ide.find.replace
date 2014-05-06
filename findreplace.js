@@ -9,30 +9,30 @@ define(function(require, exports, module) {
     return main;
 
     function main(options, imports, register) {
-        var Plugin    = imports.Plugin;
-        var settings  = imports.settings;
-        var ui        = imports.ui;
-        var anims     = imports.anims;
-        var menus     = imports.menus;
-        var layout    = imports.layout;
-        var commands  = imports.commands;
-        var tooltip   = imports.tooltip;
-        var tabs      = imports.tabManager;
-        var apf       = imports.apf;
+        var Plugin = imports.Plugin;
+        var settings = imports.settings;
+        var ui = imports.ui;
+        var anims = imports.anims;
+        var menus = imports.menus;
+        var layout = imports.layout;
+        var commands = imports.commands;
+        var tooltip = imports.tooltip;
+        var tabs = imports.tabManager;
+        var apf = imports.apf;
 
-        var css       = require("text!./findreplace.css");
-        var skin      = require("text!./skin.xml");
-        var markup    = require("text!./findreplace.xml");
+        var css = require("text!./findreplace.css");
+        var skin = require("text!./skin.xml");
+        var markup = require("text!./findreplace.xml");
         
-        var lib       = require("plugins/c9.ide.find.replace/libsearch");
+        var lib = require("plugins/c9.ide.find.replace/libsearch");
         
         var asyncSearch = require("./async_search");
-        var Range       = require("ace/range").Range;
+        var Range = require("ace/range").Range;
 
         /***** Initialization *****/
 
         var plugin = new Plugin("Ajax.org", main.consumes);
-        var emit   = plugin.getEmitter();
+        var emit = plugin.getEmitter();
 
         var libsearch = lib(settings, execFind, toggleDialog, restore, toggleOption);
 
@@ -61,103 +61,103 @@ define(function(require, exports, module) {
             if (loaded) return false;
             loaded = true;
 
-            function isSupported(editor){
+            function isSupported(editor) {
                 if (apf.activeElement === txtFind || apf.activeElement === txtReplace)
                     return true;
                 return editor && editor.ace;
             }
             
-            function isSupportedRW(editor){
+            function isSupportedRW(editor) {
                 var ace = isSupported(editor);
                 return ace === true || !ace ? ace : !ace.getOption("readOnly");
             }
 
             commands.addCommands({
                 replace: {
-                    bindKey     : { mac: "Option-Command-F", win: "Alt-Shift-F|Ctrl-H" },
-                    hint        : "search for a string inside the active document and replace it",
-                    isAvailable : isSupportedRW,
-                    exec        : function(env, args, request){
+                    bindKey: { mac: "Option-Command-F", win: "Alt-Shift-F|Ctrl-H" },
+                    hint: "search for a string inside the active document and replace it",
+                    isAvailable: isSupportedRW,
+                    exec: function(env, args, request) {
                         toggleDialog(1, true);
                     }
                 }, 
                 replaceall: {
-                    bindKey     : { mac: "", win: "" },
-                    hint        : "search for a string inside the active document and replace all",
-                    isAvailable : isSupportedRW,
-                    exec        : function(env, args, request){
+                    bindKey: { mac: "", win: "" },
+                    hint: "search for a string inside the active document and replace all",
+                    isAvailable: isSupportedRW,
+                    exec: function(env, args, request) {
                         replaceAll();
                     }
                 },
                 replacenext: {
-                    isAvailable : isSupportedRW,
-                    exec : function(env, args, request) {
+                    isAvailable: isSupportedRW,
+                    exec: function(env, args, request) {
                         replace();
                     }
                 },
                 replaceprevious: {
-                    isAvailable : isSupportedRW,
-                    exec : function(env, args, request) {
+                    isAvailable: isSupportedRW,
+                    exec: function(env, args, request) {
                         replace(true);
                     }
                 },
                 findnext: {
-                    isAvailable : isSupported,
+                    isAvailable: isSupported,
                     bindKey: {mac: "Command-G", win: "Ctrl-K"},
                     exec: function(editor) { 
                         findAgain(editor.ace);
                     },
                 },
                 findprevious: {
-                    isAvailable : isSupported,
+                    isAvailable: isSupported,
                     bindKey: {mac: "Command-Shift-G", win: "Ctrl-Shift-K"},
                     exec: function(editor) {
                         findAgain(editor.ace, true);
                     },
                 },
                 find: {
-                    hint        : "open the quicksearch dialog to quickly search for a phrase",
-                    bindKey     : { mac: "Command-F", win: "Ctrl-F" },
-                    isAvailable : isSupported,
-                    exec        : function(env, args, request) {
+                    hint: "open the quicksearch dialog to quickly search for a phrase",
+                    bindKey: { mac: "Command-F", win: "Ctrl-F" },
+                    isAvailable: isSupported,
+                    exec: function(env, args, request) {
                         toggleDialog(1, false);
                     }
                 },
                 hidesearchreplace: {
-                    bindKey     : {mac: "ESC", win: "ESC"},
-                    isAvailable : function(editor){
+                    bindKey: {mac: "ESC", win: "ESC"},
+                    isAvailable: function(editor) {
                         return winSearchReplace && winSearchReplace.visible;
                     },
-                    exec : function(env, args, request) {
+                    exec: function(env, args, request) {
                         toggleDialog(-1);
                     }
                 }
             }, plugin);
 
             menus.addItemByPath("Find/Find...", new apf.item({
-                command : "find"
+                command: "find"
             }), 100, plugin);
             menus.addItemByPath("Find/Find Next", new apf.item({
-                command : "findnext"
+                command: "findnext"
             }), 200, plugin);
             menus.addItemByPath("Find/Find Previous", new apf.item({
-                command : "findprevious"
+                command: "findprevious"
             }), 300, plugin);
             menus.addItemByPath("Find/~", new apf.divider(), 400, plugin);
             menus.addItemByPath("Find/Replace...", new apf.item({
-                command : "replace"
+                command: "replace"
             }), 500, plugin);
             menus.addItemByPath("Find/Replace Next", new apf.item({
-                command : "replacenext",
+                command: "replacenext",
             }), 600, plugin);
             menus.addItemByPath("Find/Replace Previous", new apf.item({
-                command : "replaceprevious",
+                command: "replaceprevious",
             }), 700, plugin);
             menus.addItemByPath("Find/Replace All", new apf.item({
-                command : "replaceall"
+                command: "replaceall"
             }), 800, plugin);
             
-            tabs.on("focus", function(e){
+            tabs.on("focus", function(e) {
                 if (winSearchReplace && winSearchReplace.visible) {
                     if (e.tab && e.tab.editor.ace) {
                         winSearchReplace.enable();
@@ -182,8 +182,8 @@ define(function(require, exports, module) {
 
             // Import Skin
             ui.insertSkin({
-                name         : "searchreplace",
-                data         : skin,
+                name: "searchreplace",
+                data: skin,
                 "media-path" : options.staticPrefix + "/images/",
                 "icon-path"  : options.staticPrefix + "/icons/"
             }, plugin);
@@ -192,24 +192,24 @@ define(function(require, exports, module) {
             searchRow = layout.findParent(plugin);
             ui.insertMarkup(null, markup, plugin);
 
-            txtFind              = plugin.getElement("txtFind");
-            winSearchReplace     = plugin.getElement("winSearchReplace");
-            txtReplace           = plugin.getElement("txtReplace");
+            txtFind = plugin.getElement("txtFind");
+            winSearchReplace = plugin.getElement("winSearchReplace");
+            txtReplace = plugin.getElement("txtReplace");
             tooltipSearchReplace = plugin.getElement("tooltipSearchReplace");
-            chk.searchSelection  = plugin.getElement("chkSearchSelection");
-            divSearchCount       = plugin.getElement("divSearchCount");
-            hbox                 = plugin.getElement("hbox");
-            chk.regEx            = plugin.getElement("chkRegEx");
-            chk.searchBackwards  = plugin.getElement("chkSearchBackwards");
-            chk.wrapAround       = plugin.getElement("chkWrapAround");
-            chk.matchCase        = plugin.getElement("chkMatchCase");
-            chk.wholeWords       = plugin.getElement("chkWholeWords");
-            chk.preserveCase     = plugin.getElement("chkPreserveCase");
-            btnPrev              = plugin.getElement("btnPrev");
-            btnNext              = plugin.getElement("btnNext");
-            btnReplace           = plugin.getElement("btnReplace");
-            btnReplaceAll        = plugin.getElement("btnReplaceAll");
-            btnCollapse          = plugin.getElement("btnCollapse");
+            chk.searchSelection = plugin.getElement("chkSearchSelection");
+            divSearchCount = plugin.getElement("divSearchCount");
+            hbox = plugin.getElement("hbox");
+            chk.regEx = plugin.getElement("chkRegEx");
+            chk.searchBackwards = plugin.getElement("chkSearchBackwards");
+            chk.wrapAround = plugin.getElement("chkWrapAround");
+            chk.matchCase = plugin.getElement("chkMatchCase");
+            chk.wholeWords = plugin.getElement("chkWholeWords");
+            chk.preserveCase = plugin.getElement("chkPreserveCase");
+            btnPrev = plugin.getElement("btnPrev");
+            btnNext = plugin.getElement("btnNext");
+            btnReplace = plugin.getElement("btnReplace");
+            btnReplaceAll = plugin.getElement("btnReplaceAll");
+            btnCollapse = plugin.getElement("btnCollapse");
 
             btnNext.on("click", function(){ findNext(false); });
             btnPrev.on("click", function(){ findNext(true); });
@@ -228,14 +228,14 @@ define(function(require, exports, module) {
 
                 // I'd rather use css anims, but they didn't seem to work
                 apf.tween.single(txtReplace.$ext.parentNode, {
-                    type     : "boxFlex",
-                    from     : txtReplace.$ext.parentNode.style[apf.CSSPREFIX + "BoxFlex"] || 1,
-                    to       : 3,
-                    anim     : apf.tween.easeOutCubic,
-                    control  : control,
-                    steps    : 15,
-                    interval : 1,
-                    onfinish : function(){
+                    type: "boxFlex",
+                    from: txtReplace.$ext.parentNode.style[apf.CSSPREFIX + "BoxFlex"] || 1,
+                    to: 3,
+                    anim: apf.tween.easeOutCubic,
+                    control: control,
+                    steps: 15,
+                    interval: 1,
+                    onfinish: function(){
                         ui.layout.forceResize(null, true);
                     }
                 });
@@ -249,20 +249,20 @@ define(function(require, exports, module) {
 
                 // I'd rather use css anims, but they didn't seem to work
                 apf.tween.single(txtReplace.$ext.parentNode, {
-                    type     : "boxFlex",
-                    from     : txtReplace.$ext.parentNode.style[apf.CSSPREFIX + "BoxFlex"] || 3,
-                    to       : 1,
-                    anim     : apf.tween.easeOutCubic,
-                    control  : control,
-                    steps    : 15,
-                    interval : 1,
-                    onfinish : function(){
+                    type: "boxFlex",
+                    from: txtReplace.$ext.parentNode.style[apf.CSSPREFIX + "BoxFlex"] || 3,
+                    to: 1,
+                    anim: apf.tween.easeOutCubic,
+                    control: control,
+                    steps: 15,
+                    interval: 1,
+                    onfinish: function(){
                         ui.layout.forceResize(null, true);
                     }
                 });
             });
 
-            settings.on("read", function(e){
+            settings.on("read", function(e) {
                 settings.setDefaults("state/ace/search", [
                     ["regex", "false"],
                     ["matchcase", "false"],
@@ -282,24 +282,24 @@ define(function(require, exports, module) {
 
             document.body.appendChild(tooltipSearchReplace.$ext);
 
-            chk.regEx.on("prop.value", function(e){
+            chk.regEx.on("prop.value", function(e) {
                 libsearch.setRegexpMode(txtFind, apf.isTrue(e.value));
             });
 
             decorateCheckboxes(hbox);
             
-            [txtReplace].forEach(function(node){
+            [txtReplace].forEach(function(node) {
                 tooltip.add(node.$ext, {
-                    message : node.label,
-                    width   : "auto",
-                    timeout : 0,
-                    tooltip : tooltipSearchReplace.$ext,
-                    animate : false,
-                    getPosition : function(){
-                        var pos  = ui.getAbsolutePosition(winSearchReplace.$ext);
+                    message: node.label,
+                    width: "auto",
+                    timeout: 0,
+                    tooltip: tooltipSearchReplace.$ext,
+                    animate: false,
+                    getPosition: function(){
+                        var pos = ui.getAbsolutePosition(winSearchReplace.$ext);
                         var pos2 = ui.getAbsolutePosition(node.$ext, winSearchReplace.$ext);
                         var left = pos[0] + pos2[0];
-                        var top  = pos[1];
+                        var top = pos[1];
                         return [left, top - 16];
                     }
                 }, plugin);
@@ -329,21 +329,21 @@ define(function(require, exports, module) {
 
         /***** Methods *****/
 
-        function decorateCheckboxes(parent){
+        function decorateCheckboxes(parent) {
             var cbs = parent.selectNodes("//a:checkbox");
 
-            cbs.forEach(function(cb){
+            cbs.forEach(function(cb) {
                 cb.on("click", function(){
                     execFind();
                 });
 
                 tooltip.add(cb.$ext, {
-                    message     : cb.label,
-                    width       : "auto",
-                    timeout     : 0,
-                    tooltip     : tooltipSearchReplace.$ext,
-                    animate     : false,
-                    getPosition : function(){
+                    message: cb.label,
+                    width: "auto",
+                    timeout: 0,
+                    tooltip: tooltipSearchReplace.$ext,
+                    animate: false,
+                    getPosition: function(){
                         var pos = ui.getAbsolutePosition(winSearchReplace.$ext);
                         var left = pos[0] + cb.getLeft();
                         var top = pos[1];
@@ -374,7 +374,7 @@ define(function(require, exports, module) {
             oIter.textContent = msg;
         }
 
-        function setStartPos(ace){
+        function setStartPos(ace) {
             if (!startPos.searchRange) {
                 startPos.searchRange = 
                 startPos.range = ace.getSelectionRange();
@@ -383,13 +383,13 @@ define(function(require, exports, module) {
             startPos.scrollLeft = ace.session.getScrollLeft();
         }
 
-        function initFromEditor(ace){
+        function initFromEditor(ace) {
             if (!ace.selection.isEmpty() && !ace.selection.isMultiLine())
                 txtFind.setValue(ace.getCopyText());
         }
 
         function toggleDialog(force, isReplace, noselect, callback) {
-            var tab   = tabs.focussedTab;
+            var tab = tabs.focussedTab;
             var editor = tab && tab.editor;
 
             draw();
@@ -435,7 +435,7 @@ define(function(require, exports, module) {
             btnReplaceAll.setCaption(searchRow.getWidth() < 800 ? "All" : "Replace All");
 
             winSearchReplace.$ext.style.overflow = "hidden";
-            winSearchReplace.$ext.style.height   =
+            winSearchReplace.$ext.style.height = 
                 winSearchReplace.$ext.offsetHeight + "px";
             searchRow.appendChild(winSearchReplace);
             winSearchReplace.show();
@@ -445,9 +445,9 @@ define(function(require, exports, module) {
             })) return;
 
             anims.animateSplitBoxNode(winSearchReplace, {
-                height         : winSearchReplace.$ext.scrollHeight + "px",
-                duration       : 0.2,
-                timingFunction : "cubic-bezier(.10, .10, .25, .90)"
+                height: winSearchReplace.$ext.scrollHeight + "px",
+                duration: 0.2,
+                timingFunction: "cubic-bezier(.10, .10, .25, .90)"
             }, function() {
                 winSearchReplace.$ext.style.height = "";
                 divSearchCount.$ext.style.visibility = "";
@@ -469,9 +469,9 @@ define(function(require, exports, module) {
             // Animate
             if (animate) {
                 anims.animateSplitBoxNode(winSearchReplace, {
-                    height         : "0px",
-                    duration       : 0.2,
-                    timingFunction : "ease-in-out"
+                    height: "0px",
+                    duration: 0.2,
+                    timingFunction: "ease-in-out"
                 }, function(){
                     winSearchReplace.visible = true;
                     winSearchReplace.hide();
@@ -514,11 +514,11 @@ define(function(require, exports, module) {
 
         function getOptions() {
             var options = {
-                backwards     : chk.searchBackwards.checked,
-                wrap          : chk.wrapAround.checked,
-                caseSensitive : chk.matchCase.checked,
-                wholeWord     : chk.wholeWords.checked,
-                regExp        : chk.regEx.checked
+                backwards: chk.searchBackwards.checked,
+                wrap: chk.wrapAround.checked,
+                caseSensitive: chk.matchCase.checked,
+                wholeWord: chk.wholeWords.checked,
+                regExp: chk.regEx.checked
             };
 
             if (chk.searchSelection.checked) {
@@ -826,13 +826,13 @@ define(function(require, exports, module) {
              * @param {Number} force  Set to -1 to force hide the panel, 
              *   or set to 1 to force show the panel.
              */
-            toggle : toggleDialog,
+            toggle: toggleDialog,
 
             /**
              * Return the cursor and selection to where it was, prior to 
              * starting searching.
              */
-            restore : restore,
+            restore: restore,
 
             /**
              * Find the next occurance of the search query. If wrap around is
@@ -840,20 +840,20 @@ define(function(require, exports, module) {
              * reaches the end of the file.
              * @param {Boolean} backwards  When set to true the search direction is reversed.
              */
-            findNext : findNext,
+            findNext: findNext,
 
             /**
              * Replace the next occurance of the query with whatever the user
              * entered in the replace textbox.
              * @param {Boolean} backwards  When set to true the search direction is reversed.
              */
-            replace : replace,
+            replace: replace,
 
             /**
              * Replace all occurences of the query with whatever the user
              * entered in the replace textbox.
              */
-            replaceAll : replaceAll
+            replaceAll: replaceAll
         });
 
         register(null, {

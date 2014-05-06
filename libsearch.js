@@ -85,7 +85,7 @@ module.exports = function(settings, execFind, toggleDialog, restore, toggleOptio
             return iSearchHandler;
         },
     
-        navigateList : function(type, codebox){
+        navigateList: function(type, codebox) {
             this.keyStroke = type;
             var listName = codebox.session.listName;
             var lines = settings.getJson(prefix + listName) || [];
@@ -123,7 +123,7 @@ module.exports = function(settings, execFind, toggleDialog, restore, toggleOptio
             }
         },
     
-        saveHistory : function(searchTxt, listName){
+        saveHistory: function(searchTxt, listName) {
             var json = settings.getJson(prefix + listName) || [];
     
             if (searchTxt && json[0] != searchTxt) {
@@ -134,12 +134,12 @@ module.exports = function(settings, execFind, toggleDialog, restore, toggleOptio
             return json;
         },
     
-        checkRegExp : function(txtFind, tooltip, win){
+        checkRegExp: function(txtFind, tooltip, win) {
             var searchTxt = txtFind.getValue();
             try {
                 new RegExp(searchTxt);
             }
-            catch(e) {
+            catch (e) {
                 tooltip.$ext.innerHTML = apf.escapeXML(e.message.replace(": /" + searchTxt + "/", ""));
                 apf.setOpacity(tooltip.$ext, 1);
     
@@ -159,7 +159,7 @@ module.exports = function(settings, execFind, toggleDialog, restore, toggleOptio
             return true;
         },
     
-        setRegexpMode : function(txtFind, isRegexp) {
+        setRegexpMode: function(txtFind, isRegexp) {
             var tokenizer = {}, _self = this;
             tokenizer.getLineTokens = isRegexp
                 ? function(val) { return {tokens: _self.parseRegExp(val), state: ""}; }
@@ -185,16 +185,16 @@ module.exports = function(settings, execFind, toggleDialog, restore, toggleOptio
             );
         },
     
-        regexp : {
-            alone : {"^":1, "$":1, ".":1},
-            rangeStart : {"+":1, "*":1, "?":1, "{":1},
-            replace : /^\\[sSwWbBnrd]/,
-            searches : /^\((?:\?\:|\?\!|\?|\?\=|\?\<\=)/,
-            range : /^([+*?]|\{(\d+,\d+|\d+,?|,?\d+)\})\??|^[$\^]/
+        regexp: {
+            alone: {"^":1, "$":1, ".":1},
+            rangeStart: {"+":1, "*":1, "?":1, "{":1},
+            replace: /^\\[sSwWbBnrd]/,
+            searches: /^\((?:\?\:|\?\!|\?|\?\=|\?\<\=)/,
+            range: /^([+*?]|\{(\d+,\d+|\d+,?|,?\d+)\})\??|^[$\^]/
         },
     
         //Calculate RegExp Colors
-        parseRegExp : function(value){
+        parseRegExp: function(value) {
             var re = this.regexp;
             var l, t, c, sub = 0, collection = 0;
             var out = [];

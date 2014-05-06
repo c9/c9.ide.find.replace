@@ -42,11 +42,11 @@ define(function(require, exports, module) {
                         r.callbackId = msg.callbackId;
                         postMessage(r);
                     });
-                } catch(e) {}
+                } catch (e) {}
             } else if (msg.eval) {
                 try {
                     var r = eval(msg.eval);
-                } catch(e) {
+                } catch (e) {
                     r = e.message;
                 }
                 postMessage({type: "event", data: r});
