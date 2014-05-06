@@ -1,4 +1,4 @@
-/*global describe it before after  =*/
+/*global describe it before after = */
 
 "use client";
 
@@ -8,13 +8,13 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
     
     expect.setupArchitectTest([
         {
-            packagePath : "plugins/c9.core/c9",
-            workspaceId : "ubuntu/ip-10-35-77-180",
-            startdate   : new Date(),
-            debug       : true,
-            hosted      : true,
-            local       : false,
-            davPrefix   : "/"
+            packagePath: "plugins/c9.core/c9",
+            workspaceId: "ubuntu/ip-10-35-77-180",
+            startdate: new Date(),
+            debug: true,
+            hosted: true,
+            local: false,
+            davPrefix: "/"
         },
         
         "plugins/c9.core/ext",
@@ -23,13 +23,13 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
         "plugins/c9.ide.ui/lib_apf",
         "plugins/c9.ide.ui/menus",
         {
-            packagePath : "plugins/c9.core/settings",
-            settings    : { user: { general: { animateui: true } } }
+            packagePath: "plugins/c9.core/settings",
+            settings: { user: { general: { animateui: true } } }
         },
         "plugins/c9.core/api.js",
         {
-            packagePath  : "plugins/c9.ide.ui/ui",
-            staticPrefix : "plugins/c9.ide.ui"
+            packagePath: "plugins/c9.ide.ui/ui",
+            staticPrefix: "plugins/c9.ide.ui"
         },
         "plugins/c9.ide.editors/document",
         "plugins/c9.ide.editors/undomanager",
@@ -43,12 +43,12 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
         "plugins/c9.ide.editors/pane",
         "plugins/c9.ide.editors/tab",
         {
-            packagePath : "plugins/c9.ide.ace/ace",
-            staticPrefix : "plugins/c9.ide.layout.classic"
+            packagePath: "plugins/c9.ide.ace/ace",
+            staticPrefix: "plugins/c9.ide.layout.classic"
         },
         {
-            packagePath : "plugins/c9.ide.find.replace/findreplace",
-            staticPrefix : "plugins/c9.ide.find.replace"
+            packagePath: "plugins/c9.ide.find.replace/findreplace",
+            staticPrefix: "plugins/c9.ide.find.replace"
         },
         "plugins/c9.ide.keys/commands",
         "plugins/c9.ide.ui/anims",
@@ -61,20 +61,20 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
         
         // Mock plugins
         {
-            consumes : ["apf", "ui", "Plugin"],
-            provides : [
+            consumes: ["apf", "ui", "Plugin"],
+            provides: [
                 "commands", "menus", "watcher", 
                 "save", "preferences", "clipboard",
                 "dialog.alert", "auth.bootstrap", "info", "dialog.error"
             ],
-            setup    : expect.html.mocked
+            setup: expect.html.mocked
         },
         {
-            consumes : ["ui"],
-            provides : ["layout"],
-            setup    : function(options, imports, register){
+            consumes: ["ui"],
+            provides: ["layout"],
+            setup: function(options, imports, register) {
                 register(null, {
-                    layout : (function(){
+                    layout: (function(){
                         // Load the skin
                         imports.ui.insertSkin({
                             "data"       : skin,
@@ -86,7 +86,7 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
                             proposeLayoutChange: function(){},
                             initMenus: function() {},
                             clearFindArea: function(){},
-                            findParent : function(){
+                            findParent: function(){
                                 if (!bar) {
                                     bar = apf.document.documentElement.appendChild(
                                         new imports.ui.vsplitbox());
@@ -107,27 +107,27 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
             }
         },
         {
-            consumes : ["tabManager", "ace", "findreplace", "ui", "commands"],
-            provides : [],
-            setup    : main
+            consumes: ["tabManager", "ace", "findreplace", "ui", "commands"],
+            provides: [],
+            setup: main
         }
     ], architect);
     
     function main(options, imports, register) {
-        var tabs        = imports.tabManager;
-        var ace         = imports.ace;
-        var ui          = imports.ui;
+        var tabs = imports.tabManager;
+        var ace = imports.ace;
+        var ui = imports.ui;
         var findreplace = imports.findreplace;
-        var commands    = imports.commands;
+        var commands = imports.commands;
         
         var Range = require("ace/range").Range;
         
         
-        function getTabHtml(tab){
+        function getTabHtml(tab) {
             return tab.pane.aml.getPage("editor::" + tab.editorType).$ext
         }
         
-        expect.html.setConstructor(function(tab){
+        expect.html.setConstructor(function(tab) {
             if (typeof tab == "object")
                 return getTabHtml(tab);
         });
@@ -135,7 +135,7 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
         describe('ace', function() {
             this.timeout(10000);
             
-            before(function(done){
+            before(function(done) {
                 apf.config.setProperty("allow-select", false);
                 apf.config.setProperty("allow-blur", false);
                 tabs.getPanes()[0].focus();
@@ -155,7 +155,7 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
                                 newfile: true
                             }
                         }
-                    }, function(err, page_){
+                    }, function(err, page_) {
                         expect(tabs.getTabs()).length(1);
                         tab = tabs.getTabs()[0];
                         ace = tab.editor.ace;
@@ -245,8 +245,8 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
                 });
             });
             
-            if (!onload.remain){
-               after(function(done){
+            if (!onload.remain) {
+               after(function(done) {
                    tabs.unload();
                    
                    document.body.style.marginBottom = "";
