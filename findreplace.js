@@ -635,7 +635,7 @@ define(function(require, exports, module) {
                 ace.session.highlight(re);
                 ace.session._signal("changeBackMarker");
                 
-                callback && callback();
+                callback && callback(result);
             });
         }
         
@@ -672,20 +672,24 @@ define(function(require, exports, module) {
             if (!ace)
                 return;
 
-            var txt = ace.getCopyText();
             var options = getOptions();
             options.needle = txtFind.getValue();
-            
             var re = ace.$search.$assembleRegExp(options, true);
-            var match = re.exec(txt);
             var replaceFn = getReplaceFunction(options);
-            if (match && match[0].length == txt.length) {
-                var replacement = replaceFn(match, re, txt);
-                if (txt != replacement)
-                    ace.insert(replacement);
-            }
-            
-            findNext(backwards);
+            var range = ace.selection.getRange();
+            execFind(backwards, false, options, function(result) {
+                if (!ace.selection.getRange().isEqual(range))
+                    return; // found new one
+                if (result && result.total) {
+                    re.lastIndex = result.startIndex;
+                    var match = re.exec(result.value);
+                    var replacement = match && replaceFn(match);
+                    if (match[0] != replacement) {
+                        ace.insert(replacement, true);
+                    }
+                }
+                findNext(backwards);
+            });
             txtReplace.ace.saveHistory();
         }
 
@@ -735,7 +739,7 @@ define(function(require, exports, module) {
                     endPos = doc.indexToPosition(end - start + startPos.column, startPos.row);
                     range.start = startPos;
                     range.end = endPos;
-                    var replacement = replaceFn(match, re, txt);
+                    var replacement = replaceFn(match);
                     if (txt != replacement) {
                         doc.replace(range, replacement);
                         offset += replacement.length - txt.length;
@@ -759,10 +763,9 @@ define(function(require, exports, module) {
             var fmtParts = [];
             function add(p) {
                 var last = fmtParts.length - 1;
-                if (!p) return;
-                if (typeof p == "string" && typeof fmtParts[last] == "string")
+                if (p && typeof p == "string" && typeof fmtParts[last] == "string")
                     fmtParts[last] += p;
-                else
+                else if (typeof p == "number" || p)
                     fmtParts.push(p);
             }
             var lut = {n: "\n", t: "\t", r: "\r", "&": 0, U: -1, L: -2, E: -3, u: -4, l: -5};
@@ -790,7 +793,7 @@ define(function(require, exports, module) {
                 for (var i = 0; i < fmtParts.length; i++) {
                     var ch = fmtParts[i];
                     if (typeof ch === "number") {
-                        if (ch <= 0) {
+                        if (ch < 0) {
                             switch (ch) {
                                 case -1: gChangeCase = 1; break;
                                 case -2: gChangeCase = 2; break;

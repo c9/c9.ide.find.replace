@@ -158,7 +158,7 @@ define(function(require, exports, module) {
             if (!match)
                 return cb(null);
                 
-            var start = st.session.doc.indexToPosition(match.index + offset);
+            start = st.session.doc.indexToPosition(match.index + offset);
             var end = st.session.doc.indexToPosition(start.column + match[0].length, start.row);
 
             cb({
@@ -166,7 +166,9 @@ define(function(require, exports, module) {
                 end: end,
                 total: all.length,
                 current: next,
-                wrapped: wrapped
+                wrapped: wrapped,
+                value: st.value,
+                startIndex: match.index + offset
             });
         });
     }
