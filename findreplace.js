@@ -134,26 +134,26 @@ define(function(require, exports, module) {
                 }
             }, plugin);
 
-            menus.addItemByPath("Find/Find...", new apf.item({
+            menus.addItemByPath("Find/Find...", new ui.item({
                 command: "find"
             }), 100, plugin);
-            menus.addItemByPath("Find/Find Next", new apf.item({
+            menus.addItemByPath("Find/Find Next", new ui.item({
                 command: "findnext"
             }), 200, plugin);
-            menus.addItemByPath("Find/Find Previous", new apf.item({
+            menus.addItemByPath("Find/Find Previous", new ui.item({
                 command: "findprevious"
             }), 300, plugin);
-            menus.addItemByPath("Find/~", new apf.divider(), 400, plugin);
-            menus.addItemByPath("Find/Replace...", new apf.item({
+            menus.addItemByPath("Find/~", new ui.divider(), 400, plugin);
+            menus.addItemByPath("Find/Replace...", new ui.item({
                 command: "replace"
             }), 500, plugin);
-            menus.addItemByPath("Find/Replace Next", new apf.item({
+            menus.addItemByPath("Find/Replace Next", new ui.item({
                 command: "replacenext",
             }), 600, plugin);
-            menus.addItemByPath("Find/Replace Previous", new apf.item({
+            menus.addItemByPath("Find/Replace Previous", new ui.item({
                 command: "replaceprevious",
             }), 700, plugin);
-            menus.addItemByPath("Find/Replace All", new apf.item({
+            menus.addItemByPath("Find/Replace All", new ui.item({
                 command: "replaceall"
             }), 800, plugin);
             
@@ -220,6 +220,18 @@ define(function(require, exports, module) {
             txtFind.$ext.appendChild(divSearchCount.$ext);
             txtFind.$ext.appendChild(btnPrev.$ext);
             txtFind.$ext.appendChild(btnNext.$ext);
+            
+            var first = 0;
+            function resize(){
+                if (first++ < 2) { return; } // Skip first 2 calls
+                
+                winSearchReplace.setHeight(winSearchReplace.$ext.scrollHeight);
+                winSearchReplace.$ext.style.height = "";
+                ui.layout.forceResize(null, true);
+            }
+            
+            txtFind.ace.renderer.on("autosize", resize);
+            txtReplace.ace.renderer.on("autosize", resize);
 
             var timer, control;
             txtReplace.on("focus", function(){
@@ -283,7 +295,7 @@ define(function(require, exports, module) {
             document.body.appendChild(tooltipSearchReplace.$ext);
 
             chk.regEx.on("prop.value", function(e) {
-                libsearch.setRegexpMode(txtFind, apf.isTrue(e.value));
+                libsearch.setRegexpMode(txtFind, ui.isTrue(e.value));
             });
             libsearch.setRegexpMode(txtFind, chk.regEx.checked);
             

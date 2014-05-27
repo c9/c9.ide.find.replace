@@ -13,7 +13,7 @@ var Tokenizer = require("ace/tokenizer").Tokenizer;
 var HashHandler = require("ace/keyboard/hash_handler").HashHandler;
 var TextHighlightRules = require("ace/mode/text_highlight_rules").TextHighlightRules;
 
-module.exports = function(settings, execFind, toggleDialog, restore, toggleOption) {
+module.exports = function(settings, execFind, toggleDialog, restore, toggleOption, resizeBox) {
     return {
         keyStroke: "",
         addSearchKeyboardHandler: function(txtFind, type) {
@@ -44,7 +44,7 @@ module.exports = function(settings, execFind, toggleDialog, restore, toggleOptio
                 "Ctrl-End" : function(codebox) { _self.navigateList("last", codebox);  },
                 "Esc": function() { toggleDialog(-1); },
                 "Shift-Esc": function() { restore(); },
-                "Ctrl-Return|Alt-Return": function(codebox) { codebox.insert("\n");},
+                "Ctrl-Return|Alt-Return": function(codebox) { codebox.insert("\n"); },
                 "Return": function(codebox) {
                     execFind(false, true);
                 },
