@@ -796,7 +796,7 @@ define(function(require, exports, module) {
             add(val.substr(index));
             
             if (fmtParts.length == 1 && !options.preserveCase)
-                return function() { return val };
+                return function() { return fmtParts[0] };
 
             return function(match) {
                 var gChangeCase = 0;
