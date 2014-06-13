@@ -225,7 +225,9 @@ define(function(require, exports, module) {
             function resize(){
                 if (first++ < 2) { return; } // Skip first 2 calls
                 
-                winSearchReplace.setHeight(winSearchReplace.$ext.scrollHeight);
+                var h = winSearchReplace.$ext.scrollHeight;
+                if (Math.abs(winSearchReplace.height - h) < 1) { return; }
+                winSearchReplace.setHeight(h);
                 winSearchReplace.$ext.style.height = "";
                 ui.layout.forceResize(null, true);
             }
