@@ -730,6 +730,7 @@ define(function(require, exports, module) {
                 var replaced = 0;
                 var indexArray = result.matches;
                 var value = result.value;
+                var startIndex = result.offset;
                 var re = options.re;
                 if (!indexArray.length)
                     return replaced;
@@ -742,7 +743,7 @@ define(function(require, exports, module) {
                 var start = 0, end = 0, offset = 0;
                 var range = new Range();
                 for (var i = 0; i < indexArray.length; i++) {
-                    var index = indexArray[i];
+                    var index = indexArray[i] + startIndex;
                     re.lastIndex = index;
                     var match = re.exec(value);
                     var txt = match[0];

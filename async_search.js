@@ -107,8 +107,11 @@ define(function(require, exports, module) {
             if (!all)
                 return cb("waiting");
             
+            // find in range
+            var offset = options.indexRange ? options.indexRange[0] : 0;
+            
             if (options.findAll)
-                return cb({value: st.value, matches: all});
+                return cb({value: st.value, matches: all, offset: offset});
             
             // preprocess options
             var backwards = options.backwards === true;
@@ -126,8 +129,6 @@ define(function(require, exports, module) {
             if (!options.regex)
                 options.regex = RegExp(options.source, options.flags);
             
-            // find in range
-            var offset = options.indexRange ? options.indexRange[0] : 0;
             // find index
             var index = st.session.doc.positionToIndex(start) - offset;
             

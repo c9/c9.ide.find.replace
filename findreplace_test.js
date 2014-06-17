@@ -124,7 +124,7 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
         
         
         function getTabHtml(tab) {
-            return tab.pane.aml.getPage("editor::" + tab.editorType).$ext
+            return tab.pane.aml.getPage("editor::" + tab.editorType).$ext;
         }
         
         expect.html.setConstructor(function(tab) {
@@ -231,6 +231,22 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
                     expect(codebox.getValue()).equal("baz");
                     codebox.execCommand(prev);
                     expect(codebox.getValue()).equal("bar");           
+                });
+                it('should replace all in selection', function() {
+                    var range = new Range(5, 2, 7, 1);
+                    ace.selection.setRange(range);
+                    var replace = findreplace.getElement("txtReplace").ace;
+                    var codebox = findreplace.getElement("txtFind").ace;
+                    findreplace.getElement("chkSearchSelection").check();
+                    findreplace.getElement("chkRegEx").check();
+                    codebox.setValue("(a)|(b)");
+                    replace.setValue("\\u$2x");
+                    
+                    ace.once("input", function() {
+                        expect(ace.selection.getRange() + "").equal(range + "");
+                        expect(ace.session.getTextRange(range)).equal("5 Bx 5\nX 6 Bx 6\nX");
+                    });
+                    findreplace.replaceAll();
                 });
                 it('should close findbar', function() {
                     commands.exec("find");
