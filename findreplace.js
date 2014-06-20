@@ -707,7 +707,7 @@ define(function(require, exports, module) {
             txtReplace.ace.saveHistory();
         }
 
-        function replaceAll() {
+        function replaceAll(cb) {
             var ace = getAce();
             if (!ace)
                 return;
@@ -763,6 +763,7 @@ define(function(require, exports, module) {
         
                 ace.$blockScrolling -= 1;
                 updateCounter();
+                cb && cb();
             });
             
             txtReplace.ace.saveHistory();

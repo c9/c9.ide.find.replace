@@ -242,12 +242,11 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
                     codebox.setValue("(a)|(b)");
                     replace.setValue("\\u$2x");
                     
-                    ace.once("input", function() {
+                    findreplace.replaceAll(function() {
                         expect(ace.selection.getRange() + "").equal(range + "");
                         expect(ace.session.getTextRange(range)).equal("5 Bx 5\nX 6 Bx 6\nX");
                         done();
                     });
-                    findreplace.replaceAll();
                 });
                 it('should close findbar', function() {
                     commands.exec("find");
