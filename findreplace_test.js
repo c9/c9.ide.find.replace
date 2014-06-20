@@ -232,7 +232,7 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
                     codebox.execCommand(prev);
                     expect(codebox.getValue()).equal("bar");           
                 });
-                it('should replace all in selection', function() {
+                it('should replace all in selection', function(done) {
                     var range = new Range(5, 2, 7, 1);
                     ace.selection.setRange(range);
                     var replace = findreplace.getElement("txtReplace").ace;
@@ -245,6 +245,7 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
                     ace.once("input", function() {
                         expect(ace.selection.getRange() + "").equal(range + "");
                         expect(ace.session.getTextRange(range)).equal("5 Bx 5\nX 6 Bx 6\nX");
+                        done();
                     });
                     findreplace.replaceAll();
                 });
