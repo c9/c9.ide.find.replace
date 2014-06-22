@@ -88,7 +88,6 @@ module.exports = function(settings, execFind, toggleDialog, restore, toggleOptio
         },
     
         navigateList: function(type, codebox) {
-            this.keyStroke = type;
             var listName = codebox.session.listName;
             var lines = settings.getJson(prefix + listName) || [];
     
@@ -103,13 +102,10 @@ module.exports = function(settings, execFind, toggleDialog, restore, toggleOptio
     
             var next;
             if (type == "prev") {
-                if (this.position <= 0) {
-                    codebox.setValue("");
-                    this.keyStroke = "";
-                    this.position = -1;
-                    return;
-                }
                 next = Math.max(0, this.position - 1);
+                if (this.position <= 0)
+                    next = -1;
+
             }
             else if (type == "next")
                 next = Math.min(lines.length - 1, this.position + 1);
@@ -118,8 +114,9 @@ module.exports = function(settings, execFind, toggleDialog, restore, toggleOptio
             else if (type == "first")
                 next = 0;
     
-            if (next in lines && next != this.position) {
-                codebox.setValue(lines[next], true);
+            if (next in lines && next != this.position || next == -1) {
+                this.keyStroke = type;
+                codebox.setValue(lines[next] || "", true);
                 this.keyStroke = "";
                 this.position = next;
             }
