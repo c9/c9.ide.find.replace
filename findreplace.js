@@ -391,13 +391,14 @@ define(function(require, exports, module) {
             oIter.textContent = msg;
         }
 
-        function setStartPos(ace) {
-            if (!startPos.searchRange) {
+        function setStartPos(ace, force) {
+            if (!startPos.searchRange || force) {
                 startPos.searchRange = 
                 startPos.range = ace.getSelectionRange();
             }
             startPos.scrollTop = ace.session.getScrollTop();
             startPos.scrollLeft = ace.session.getScrollLeft();
+            startPos.name = ace.session.c9doc.name;
         }
 
         function initFromEditor(ace) {
@@ -425,7 +426,7 @@ define(function(require, exports, module) {
                     if (!isReplace)
                         initFromEditor(ace);
 
-                    setStartPos(ace);
+                    setStartPos(ace, ace.selection.isEmpty());
                 }
 
                 if (!winSearchReplace.visible)
@@ -540,12 +541,17 @@ define(function(require, exports, module) {
             var ace = getAce();
             if (chk.searchSelection.checked) {
                 var range = ace.getSelectionRange();
-                var isValid = range.isMultiLine() || range.end.column - range.start.column > 10;
+                var isValid = range.isMultiLine() || range.end.column - range.start.column > 40;
                 if (!isValid || currentRange && range.isEqual(currentRange))
                     range = null;
                 
-                startPos.searchRange =
-                options.range = range || startPos.searchRange;
+                if (!range && startPos.name == ace.session.c9doc.name)
+                    range = startPos.searchRange;
+                
+                startPos.searchRange = options.range = range;
+                
+                if (options.range && options.range.isEmpty())
+                    options.range = null;
             }
             else {
                 options.range = null;
@@ -605,7 +611,7 @@ define(function(require, exports, module) {
             
             if (options.range && type != "highlight")
                 addFindInRangeMarker(options.range, ace.session);
-            else
+            else if (!options.range)
                 removeFindInRangeMarker(type != "highlight");
             
             var re = ace.$search.$assembleRegExp(options, true);
@@ -613,7 +619,7 @@ define(function(require, exports, module) {
                 updateCounter();
                 if (type != "highlight") {
                     var pos = options.start[options.backwards? "end" : "start"];
-                    var newRange = Range.fromPoints(pos, pos);
+                    var newRange = options.range || Range.fromPoints(pos, pos);
                     ace.revealRange(newRange);
                 }
                 return callback && callback();
@@ -639,10 +645,13 @@ define(function(require, exports, module) {
                 }
                 var newRange = Range.fromPoints(result.start, result.end);
                 
-                if (type == "next" && newRange)
+                if (options.range && newRange.isEmpty())
+                    newRange = options.range;
+                
+                if (type == "next")
                     currentRange = newRange;
 
-                if (newRange && type != "highlight")
+                if (type != "highlight")
                     ace.revealRange(newRange);
 
                 // highlight
