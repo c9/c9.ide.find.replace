@@ -79,7 +79,7 @@ module.exports = function(settings, execFind, toggleDialog, restore, toggleOptio
                 if (!command)
                     return;
     
-                var success = command.exec(editor);
+                var success = editor.execCommand(command);
                 if (success !== false)
                     return {command: "null"};
             };
