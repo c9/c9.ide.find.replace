@@ -545,7 +545,7 @@ define(function(require, exports, module) {
                 if (!isValid || currentRange && range.isEqual(currentRange))
                     range = null;
                 
-                if (!range && startPos.name == ace.session.c9doc.name)
+                if (!range && ace.session.c9doc && startPos.name == ace.session.c9doc.name)
                     range = startPos.searchRange;
                 
                 startPos.searchRange = options.range = range;
