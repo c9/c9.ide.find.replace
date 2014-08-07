@@ -744,7 +744,6 @@ define(function(require, exports, module) {
                 if (!indexArray.length)
                     return replaced;
         
-                ace.$blockScrolling += 1;
                 var doc = ace.session.doc;
 
                 var startPos = {row: 0, column: 0};
@@ -770,7 +769,6 @@ define(function(require, exports, module) {
                     }
                 }
         
-                ace.$blockScrolling -= 1;
                 updateCounter();
                 cb && cb();
             });
