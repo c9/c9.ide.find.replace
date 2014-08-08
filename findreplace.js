@@ -806,7 +806,7 @@ define(function(require, exports, module) {
             }
             add(val.substr(index));
             
-            if (fmtParts.length == 1 && !options.preserveCase)
+            if (fmtParts.length == 1 && typeof fmtParts[0] == "string" && !options.preserveCase)
                 return function() { return fmtParts[0] };
 
             return function(match) {
