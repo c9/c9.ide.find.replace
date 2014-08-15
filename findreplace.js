@@ -398,7 +398,7 @@ define(function(require, exports, module) {
             }
             startPos.scrollTop = ace.session.getScrollTop();
             startPos.scrollLeft = ace.session.getScrollLeft();
-            startPos.name = ace.session.c9doc.name;
+            startPos.id = getSessionId(ace.session);
         }
 
         function initFromEditor(ace) {
@@ -545,7 +545,7 @@ define(function(require, exports, module) {
                 if (!isValid || currentRange && range.isEqual(currentRange))
                     range = null;
                 
-                if (!range && ace.session.c9doc && startPos.name == ace.session.c9doc.name)
+                if (!range && startPos.id == getSessionId(ace.session))
                     range = startPos.searchRange;
                 
                 startPos.searchRange = options.range = range;
@@ -860,6 +860,10 @@ define(function(require, exports, module) {
             var tab = tabs.focussedTab;
             var editor = tab && tab.editor;
             return editor && editor.ace;
+        }
+        
+        function getSessionId(session) {
+            return (session.c9doc || session.c9session).name;
         }
         
         var marker;
