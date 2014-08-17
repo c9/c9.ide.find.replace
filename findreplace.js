@@ -452,11 +452,11 @@ define(function(require, exports, module) {
         function showUi(callback) {
             btnReplaceAll.setCaption(searchRow.getWidth() < 800 ? "All" : "Replace All");
 
+            searchRow.appendChild(winSearchReplace);
+            winSearchReplace.show();
             winSearchReplace.$ext.style.overflow = "hidden";
             winSearchReplace.$ext.style.height = 
                 winSearchReplace.$ext.offsetHeight + "px";
-            searchRow.appendChild(winSearchReplace);
-            winSearchReplace.show();
 
             if (layout.clearFindArea(plugin, function(){
                 showUi(callback);
@@ -503,6 +503,7 @@ define(function(require, exports, module) {
             }
             else {
                 winSearchReplace.visible = true;
+                winSearchReplace.setHeight(0);
                 winSearchReplace.hide();
                 winSearchReplace.parentNode.removeChild(winSearchReplace);
 
