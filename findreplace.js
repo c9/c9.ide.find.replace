@@ -545,7 +545,7 @@ define(function(require, exports, module) {
                 if (!isValid || currentRange && range.isEqual(currentRange))
                     range = null;
                 
-                if (!range && startPos.id == getSessionId(ace.session))
+                if (marker || !range && startPos.id == getSessionId(ace.session))
                     range = startPos.searchRange;
                 
                 startPos.searchRange = options.range = range;
