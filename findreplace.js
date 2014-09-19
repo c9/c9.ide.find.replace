@@ -351,7 +351,9 @@ define(function(require, exports, module) {
 
             cbs.forEach(function(cb) {
                 cb.on("click", function(){
-                    execFind();
+                    if (this.name == "chkSearchSelection") 
+                        updateFindInRangeMarker({});
+                    execFind(undefined, "highlight");
                 });
 
                 tooltip.add(cb.$ext, {
@@ -392,9 +394,22 @@ define(function(require, exports, module) {
         }
 
         function setStartPos(ace, force) {
-            if (!startPos.searchRange || force) {
-                startPos.searchRange = 
+            if (!startPos.range || force) {
                 startPos.range = ace.getSelectionRange();
+            }
+            if (chk.searchSelection.checked) {
+                var range = ace.getSelectionRange();
+                var isValid = ace.session.getTextRange(range).length > 100;
+                if (!isValid || currentRange && range.isEqual(currentRange))
+                    range = null;
+                    
+                if (marker || !range && startPos.id == getSessionId(ace.session))
+                    range = startPos.searchRange;
+                
+                if (range && !range.isEmpty())
+                    startPos.searchRange = range;
+                else
+                    startPos.searchRange = null;
             }
             startPos.scrollTop = ace.session.getScrollTop();
             startPos.scrollLeft = ace.session.getScrollLeft();
@@ -520,7 +535,7 @@ define(function(require, exports, module) {
                 return false;
 
             var editor = getAce();
-            editor.selection.setSelectionRange(startPos.range);
+            editor.selection.setSelectionRange(startPos.range || startPos.searchRange);
             editor.session.setScrollTop(startPos.scrollTop);
             editor.session.setScrollLeft(startPos.scrollLeft);
         }
@@ -541,18 +556,7 @@ define(function(require, exports, module) {
             };
             var ace = getAce();
             if (chk.searchSelection.checked) {
-                var range = ace.getSelectionRange();
-                var isValid = range.isMultiLine() || range.end.column - range.start.column > 40;
-                if (!isValid || currentRange && range.isEqual(currentRange))
-                    range = null;
-                
-                if (marker || !range && startPos.id == getSessionId(ace.session))
-                    range = startPos.searchRange;
-                
-                startPos.searchRange = options.range = range;
-                
-                if (options.range && options.range.isEmpty())
-                    options.range = null;
+                options.range = startPos.searchRange;
             }
             else {
                 options.range = null;
@@ -613,7 +617,7 @@ define(function(require, exports, module) {
             if (options.range && type != "highlight")
                 addFindInRangeMarker(options.range, ace.session);
             else if (!options.range)
-                removeFindInRangeMarker(type != "highlight");
+                removeFindInRangeMarker();
             
             var re = ace.$search.$assembleRegExp(options, true);
             if (!re) {
@@ -886,11 +890,6 @@ define(function(require, exports, module) {
         }
         
         function removeFindInRangeMarker(reset) {
-            if (reset) {
-                delete startPos.searchRange;
-                delete startPos.range;
-            }
-            
             if (!marker) return;
             
             var session = marker.session;
@@ -902,28 +901,42 @@ define(function(require, exports, module) {
             marker = null;
         }
         
-        function initFindInRange() {
-            winSearchReplace.addEventListener("focus", function(e) {
-                var ace = getAce();
-                if (ace && e.fromElement && e.fromElement.editor) {
-                    if (e.fromElement.editor.ace == ace)
-                        setStartPos(ace);
-                    
-                    execFind(false, "highlight");
-                }
+        function updateFindInRangeMarker(e) {
+            var changeFocusInside = false;
+            var isBlur = e.name == "blur";
+            var target = isBlur ? e.toElement : e.fromElement;
+            if (target && target.$ext) {
+                changeFocusInside = winSearchReplace.$ext.contains(target.$ext);
+            }
+            
+            if (changeFocusInside)
+                return;
+
+            if (isBlur)
+                return removeFindInRangeMarker();
+
+            var ace = getAce();
+            if (ace && e.fromElement && e.fromElement.editor) {
+                if (e.fromElement.editor.ace == ace)
+                    setStartPos(ace);
                 
-                if (chk.searchSelection.checked)
-                    addFindInRangeMarker(getOptions().range, ace.session);
-                else
-                    removeFindInRangeMarker(true);
+                execFind(false, "highlight");
+            }
+            
+            if (!startPos.searchRange || startPos.id !== getSessionId(ace.session))
+                setStartPos(ace);
+            
+            if (chk.searchSelection.checked)
+                addFindInRangeMarker(getOptions().range, ace.session);
+            else
+                removeFindInRangeMarker();
+            if (e.name)
                 currentRange = null;
-            });
-            winSearchReplace.addEventListener("blur", function(e) {
-                if (marker) {
-                    removeFindInRangeMarker();
-                    marker = null;
-                }
-            });
+        }
+        
+        function initFindInRange() {
+            winSearchReplace.addEventListener("focus", updateFindInRangeMarker);
+            winSearchReplace.addEventListener("blur", updateFindInRangeMarker);
         }
 
         /***** Lifecycle *****/
