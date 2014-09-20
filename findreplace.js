@@ -883,9 +883,9 @@ define(function(require, exports, module) {
             start.id = session.addMarker(start, "findInRangeMarker", true, "line", true);
             end.id = session.addMarker(end, "findInRangeMarker", true, "line", true);
             
-            start.end = session.doc.createAnchor(start.end.row, start.end.column);
-            end.start = session.doc.createAnchor(end.start.row, end.start.column);
-
+            range.start = start.end = session.doc.createAnchor(start.end.row, start.end.column);
+            range.end = end.start = session.doc.createAnchor(end.start.row, end.start.column);
+            
             return marker = {start: start, end: end, session: session};
         }
         
