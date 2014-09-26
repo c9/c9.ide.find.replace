@@ -18,7 +18,7 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
         },
         
         "plugins/c9.core/ext",
-        "plugins/c9.core/http",
+        "plugins/c9.core/http-xhr",
         "plugins/c9.core/util",
         "plugins/c9.ide.ui/lib_apf",
         "plugins/c9.ide.ui/menus",
