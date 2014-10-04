@@ -804,7 +804,7 @@ define(function(require, exports, module) {
                 index = re.lastIndex;
                 var part = m[1] || m[2];
                 if (/\d/.test(part))
-                    part = parseInt(part, 10);
+                    part = options.regExp ? parseInt(part, 10) : part;
                 else if (part in lut)
                     part = lut[part];
                 add(part);
