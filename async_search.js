@@ -129,32 +129,48 @@ define(function(require, exports, module) {
             if (!options.regex)
                 options.regex = RegExp(options.source, options.flags);
             
+            
+            var value = st.value;
+            if (options.indexRange)
+                value = value.slice(offset, options.indexRange[1]);
+            
             // find index
             var index = st.session.doc.positionToIndex(start) - offset;
             
             var i = binIndexOf(all, index);
             
-            var next = i + (backwards ? -1 : 1);
-            if (!backwards && all[i] == index)
-                next--;
-            
+            var next = i;
+            var match;
             var wrapped = false;
-            if (next > all.length - 1) {
-                next = wrap ? 0 : all.length - 1;
-                wrapped = wrap;
-            } else if (next < 0) {
-                next = wrap ? all.length - 1 : 0;
-                wrapped = wrap;
-            }
+            var updateWrap = function() {
+                if (next > all.length - 1) {
+                    next = wrap ? 0 : all.length - 1;
+                    wrapped = wrap;
+                } else if (next < 0) {
+                    next = wrap ? all.length - 1 : 0;
+                    wrapped = wrap;
+                }
+            };
+            var getMatch = function() {
+                if (all[next] !== undefined) {
+                    options.regex.lastIndex = all[next];
+                    return options.regex.exec(value);
+                }
+            };
             
-            if (all[next] == undefined)
-                return cb(null);
-
-            options.regex.lastIndex = all[next];
-            var value = st.value;
-            if (options.indexRange)
-                value = value.slice(offset, options.indexRange[1]);
-            var match = options.regex.exec(value);
+            if (backwards) {
+                match = getMatch();
+                if (!match || all[next] + match[0].length > index) {
+                    next -= 1;
+                    updateWrap();
+                    match = getMatch();
+                }
+            } else {
+                if (all[i] != index)
+                    next += 1;
+                updateWrap();
+                match = getMatch();
+            }
             
             if (!match)
                 return cb(null);

@@ -713,8 +713,14 @@ define(function(require, exports, module) {
                     var match = re.exec(result.value);
                     var replacement = match && replaceFn(match);
                     if (match[0] != replacement) {
-                        ace.insert(replacement, true);
+                        range.end = ace.insert(replacement, true);
                     }
+                    if (options.backwards) {
+                        range.end = range.start;
+                    } else {
+                        range.start = range.end;
+                    }
+                    ace.selection.setRange(range);
                 }
                 findNext(backwards);
             });
