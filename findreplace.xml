@@ -23,7 +23,6 @@
                 <a:checkbox id="chkWholeWords" value="state/ace/search/@wholeword" class="chkWholeWords" label="Whole Words" skin="grouped_checkbox" width="27" />
             </a:hbox>
             <a:hbox class="grouped_checkbox_holder" align="start" height="27">
-                <a:checkbox id="chkSearchBackwards" value="state/ace/search/@backwards" class="chkSearchBackwards" label="Search Backwards" skin="grouped_checkbox" width="27" />
                 <a:checkbox id="chkWrapAround" value="state/ace/search/@wraparound" class="chkWrapAround" label="Wrap Around" skin="grouped_checkbox" width="27" />
                 <a:checkbox id="chkSearchSelection" class="chkSearchSelection" label="Search Selection" skin="grouped_checkbox" width="27" />
             </a:hbox>

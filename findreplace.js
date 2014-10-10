@@ -200,7 +200,6 @@ define(function(require, exports, module) {
             divSearchCount = plugin.getElement("divSearchCount");
             hbox = plugin.getElement("hbox");
             chk.regEx = plugin.getElement("chkRegEx");
-            chk.searchBackwards = plugin.getElement("chkSearchBackwards");
             chk.wrapAround = plugin.getElement("chkWrapAround");
             chk.matchCase = plugin.getElement("chkMatchCase");
             chk.wholeWords = plugin.getElement("chkWholeWords");
@@ -548,7 +547,7 @@ define(function(require, exports, module) {
 
         function getOptions() {
             var options = {
-                backwards: chk.searchBackwards.checked,
+                backwards: false,
                 wrap: chk.wrapAround.checked,
                 caseSensitive: chk.matchCase.checked,
                 wholeWord: chk.wholeWords.checked,
@@ -977,7 +976,6 @@ define(function(require, exports, module) {
          * * tooltipSearchReplace - `{ui.label}`
          * * chkSearchSelection - `{ui.checkbox}`
          * * chkRegEx - `{ui.checkbox}`
-         * * chkSearchBackwards - `{ui.checkbox}`
          * * chkWrapAround - `{ui.checkbox}`
          * * chkMatchCase - `{ui.checkbox}`
          * * chkWholeWords - `{ui.checkbox}`
