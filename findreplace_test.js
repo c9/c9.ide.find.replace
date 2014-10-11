@@ -107,7 +107,7 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
             }
         },
         {
-            consumes: ["tabManager", "ace", "findreplace", "ui", "commands"],
+            consumes: ["tabManager", "ace", "findreplace", "commands", "settings"],
             provides: [],
             setup: main
         }
@@ -115,13 +115,13 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
     
     function main(options, imports, register) {
         var tabs = imports.tabManager;
-        var ace = imports.ace;
-        var ui = imports.ui;
+        var settings = imports.settings;
         var findreplace = imports.findreplace;
         var commands = imports.commands;
         
         var Range = require("ace/range").Range;
         
+        var txtFind, txtReplace;
         
         function getTabHtml(tab) {
             return tab.pane.aml.getPage("editor::" + tab.editorType).$ext;
@@ -174,7 +174,9 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
                     ace.selection.setRange(new Range(0, 0, 0, 1));
                     commands.exec("find");
                     
-                    var txtFind = findreplace.getElement("txtFind");
+                    txtFind = findreplace.getElement("txtFind").ace;
+                    txtReplace = findreplace.getElement("txtReplace").ace;
+                    
                     expect(txtFind.getValue()).equal("a");
                     
                     tab.editor.focus();
@@ -191,56 +193,80 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
                         findreplace.findNext();                        
                     }, 100);
                 });
-                it('should find again', function() {
+                it('should find again and again', function() {
                     commands.exec("findnext");
                     expect(ace.selection.getRange().end.row).equal(20);
-                   
                     
                     ace.selection.setRange(new Range(0, 0, 0, 7));
                     
                     commands.exec("findnext");
                     expect(ace.selection.getRange().start.column).equal(0);
+                    
+                    var kb = txtFind.keyBinding.$handlers[1].commands;
+                    var prev = kb["Shift-Return"];
+                    var next = kb["Return"];
+                    
+                    ace.selection.setRange(new Range(10, 5, 10, 5));
+                    txtFind.execCommand(next);
+                    expect(ace.selection.getRange()).to.deep.equal(new Range(10, 5, 10, 8));
+                    
+                    txtReplace.setValue("b 0");
+                    findreplace.replace();
+                    expect(ace.selection.getRange()).to.deep.equal(new Range(20, 5, 20, 8));
+                    findreplace.replace(true);
+                    expect(ace.selection.getRange()).to.deep.equal(new Range(10, 5, 10, 8));
+                    
+                    ace.selection.setRange(new Range(10, 8, 10, 8));
+                    txtFind.execCommand(prev);
+                    expect(ace.selection.getRange()).to.deep.equal(new Range(10, 5, 10, 8));
+                    
+                    ace.selection.setRange(new Range(10, 7, 10, 7));
+                    txtFind.execCommand(next);
+                    expect(ace.selection.getRange()).to.deep.equal(new Range(20, 5, 20, 8));
+                    
+                    ace.selection.setRange(new Range(20, 7, 20, 7));
+                    txtFind.execCommand(prev);
+                    expect(ace.selection.getRange()).to.deep.equal(new Range(10, 5, 10, 8));
                 });
                 it('should remember replace history', function() {
-                    var codebox = findreplace.getElement("txtReplace").ace;
-                    codebox.setValue("foo");
+                    // reset replace textbox history
+                    settings.setJson("state/search-history/" + txtReplace.session.listName, null);
+                    txtReplace.setValue("foo");
                     
                     commands.exec("replacenext");
-                    codebox.setValue("bar");
+                    txtReplace.setValue("bar");
                     commands.exec("replacenext");
                     
-                    var kb = codebox.keyBinding;
-                    var prev = kb.$handlers[1].commands.Up;
-                    var next = kb.$handlers[1].commands.Down;
+                    var kb = txtReplace.keyBinding.$handlers[1].commands;
+                    var prev = kb.Up;
+                    var next = kb.Down;
                     
-                    codebox.execCommand(prev);
-                    expect(codebox.getValue()).equal("foo");
-                    codebox.execCommand(prev);
-                    expect(codebox.getValue()).equal("foo");
+                    txtReplace.execCommand(prev);
+                    expect(txtReplace.getValue()).equal("foo");
+                    txtReplace.execCommand(prev);
+                    expect(txtReplace.getValue()).equal("foo");
                     
-                    codebox.execCommand(next);
-                    expect(codebox.getValue()).equal("bar");
+                    txtReplace.execCommand(next);
+                    expect(txtReplace.getValue()).equal("bar");
                     
-                    codebox.execCommand(next);
-                    expect(codebox.getValue()).equal("");
+                    txtReplace.execCommand(next);
+                    expect(txtReplace.getValue()).equal("");
                     
-                    codebox.setValue("baz");
-                    codebox.execCommand(next);
-                    expect(codebox.getValue()).equal("");
-                    codebox.execCommand(prev);
-                    expect(codebox.getValue()).equal("baz");
-                    codebox.execCommand(prev);
-                    expect(codebox.getValue()).equal("bar");           
+                    txtReplace.setValue("baz");
+                    txtReplace.execCommand(next);
+                    expect(txtReplace.getValue()).equal("");
+                    txtReplace.execCommand(prev);
+                    expect(txtReplace.getValue()).equal("baz");
+                    txtReplace.execCommand(prev);
+                    expect(txtReplace.getValue()).equal("bar");           
                 });
                 it('should replace all in selection', function(done) {
                     var range = new Range(5, 2, 7, 1);
                     ace.selection.setRange(range);
-                    var replace = findreplace.getElement("txtReplace").ace;
-                    var codebox = findreplace.getElement("txtFind").ace;
                     findreplace.getElement("chkSearchSelection").check();
                     findreplace.getElement("chkRegEx").check();
-                    codebox.setValue("(a)|(b)");
-                    replace.setValue("\\u$2x");
+                    txtFind.setValue("(a)|(b)");
+                    txtReplace.setValue("\\u$2x");
                     
                     findreplace.replaceAll(function() {
                         expect(ace.selection.getRange() + "").equal(range + "");

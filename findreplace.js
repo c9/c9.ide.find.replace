@@ -713,7 +713,7 @@ define(function(require, exports, module) {
                     var match = re.exec(result.value);
                     var replacement = match && replaceFn(match);
                     if (match[0] != replacement) {
-                        range.end = ace.insert(replacement, true);
+                        range.end = ace.session.replace(range, replacement);
                     }
                     if (options.backwards) {
                         range.end = range.start;
