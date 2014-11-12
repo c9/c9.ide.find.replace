@@ -53,7 +53,7 @@
                 display: none;
             }
 
-            .btnquicksearchnav.withDivider .btnDivider {
+            .btnquicksearchnav.withDivider .btnDivider when(@find-divider = true){
                 display: block;
             }
         ]]></a:style>
