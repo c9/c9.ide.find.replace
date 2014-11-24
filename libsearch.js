@@ -127,6 +127,8 @@ module.exports = function(settings, execFind, toggleDialog, restore, toggleOptio
     
             if (searchTxt && json[0] != searchTxt) {
                 json.unshift(searchTxt);
+                if (json.length > 200)
+                    json.splice(200, json.length);
                 settings.setJson(prefix + listName, json);
             }
     
