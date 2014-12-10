@@ -852,7 +852,7 @@ define(function(require, exports, module) {
                 if (options.preserveCase) {
                     var input = match[0];
                     var replacement = result.split("");
-                    for (var i = Math.min(input.length, input.length); i--; ) {
+                    for (var i = Math.min(input.length, replacement.length); i--; ) {
                         var ch = input[i];
                         if (ch && ch.toLowerCase() != ch)
                             replacement[i] = replacement[i].toUpperCase();
