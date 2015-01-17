@@ -242,7 +242,7 @@ define(function(require, exports, module) {
                 // I'd rather use css anims, but they didn't seem to work
                 apf.tween.single(txtReplace.$ext.parentNode, {
                     type: "boxFlex",
-                    from: txtReplace.$ext.parentNode.style[apf.CSSPREFIX + "BoxFlex"] || 1,
+                    from: txtReplace.$ext.parentNode.style[apf.CSS_FLEX_PROP] || 1,
                     to: 3,
                     anim: apf.tween.easeOutCubic,
                     control: control,
