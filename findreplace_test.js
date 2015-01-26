@@ -85,7 +85,7 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
                         return {
                             proposeLayoutChange: function(){},
                             initMenus: function() {},
-                            clearFindArea: function(){},
+                            setFindArea: function(){},
                             findParent: function(){
                                 if (!bar) {
                                     bar = apf.document.documentElement.appendChild(

@@ -466,66 +466,13 @@ define(function(require, exports, module) {
         function showUi(callback) {
             btnReplaceAll.setCaption(searchRow.getWidth() < 800 ? "All" : "Replace All");
 
-            searchRow.appendChild(winSearchReplace);
-            winSearchReplace.show();
-            winSearchReplace.$ext.style.overflow = "hidden";
-            winSearchReplace.$ext.style.height = 
-                winSearchReplace.$ext.offsetHeight + "px";
-
-            if (layout.clearFindArea(plugin, function(){
-                showUi(callback);
-            })) return;
-
-            anims.animateSplitBoxNode(winSearchReplace, {
-                height: winSearchReplace.$ext.scrollHeight + "px",
-                duration: 0.2,
-                timingFunction: "cubic-bezier(.10, .10, .25, .90)"
-            }, function() {
-                winSearchReplace.$ext.style.height = "";
-                divSearchCount.$ext.style.visibility = "";
-                
-                ui.layout.forceResize(null, true);
-            });
+            layout.setFindArea(winSearchReplace, {}, callback);
 
             btnCollapse.setValue(1);
         }
 
         function hideUi(animate, callback) {
-            if (animate == undefined)
-                animate = settings.getBool("user/general/@animateui");
-            winSearchReplace.visible = false;
-
-            winSearchReplace.$ext.style.height
-                = winSearchReplace.$ext.offsetHeight + "px";
-
-            // Animate
-            if (animate) {
-                anims.animateSplitBoxNode(winSearchReplace, {
-                    height: "0px",
-                    duration: 0.2,
-                    timingFunction: "ease-in-out"
-                }, function(){
-                    winSearchReplace.visible = true;
-                    winSearchReplace.hide();
-                    if (winSearchReplace.parentNode)
-                        winSearchReplace.parentNode.removeChild(winSearchReplace);
-
-                    setTimeout(function(){
-                        callback && callback();
-                    }, 50);
-                });
-            }
-            else {
-                winSearchReplace.visible = true;
-                winSearchReplace.setHeight(0);
-                winSearchReplace.hide();
-                winSearchReplace.parentNode.removeChild(winSearchReplace);
-
-                callback
-                    ? callback()
-                    : ui.layout.forceResize(null, true);
-            }
-
+            layout.setFindArea(null, {}, callback);
             btnCollapse.setValue(0);
         }
 
@@ -537,12 +484,6 @@ define(function(require, exports, module) {
             editor.selection.setSelectionRange(startPos.range || startPos.searchRange);
             editor.session.setScrollTop(startPos.scrollTop);
             editor.session.setScrollLeft(startPos.scrollLeft);
-        }
-
-        function onHide() {
-            var tab = tabs.focussedTab;
-            if (tab && tab.editor.ace)
-                tabs.focusTab(tab);
         }
 
         function getOptions() {
@@ -689,11 +630,6 @@ define(function(require, exports, module) {
                 backwards ? ace.findPrevious() : ace.findNext();
         }
         
-        function find() {
-            toggleDialog(1);
-            return false;
-        }
-
         function replace(backwards) {
             var ace = getAce();
             if (!ace)
