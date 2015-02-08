@@ -9,14 +9,12 @@
         "url": "http://github.com/c9/c9.ide.find.replace.git"
     },
     "plugins": {
-        "plugin": {
-            "findreplace": {}
-        }
+        "findreplace": {}
     },
     "categories": [
         "core"
     ],
     "licenses": [
-        ""
+        "AGPL"
     ]
 }
