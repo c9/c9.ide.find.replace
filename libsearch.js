@@ -2,16 +2,13 @@
  * Search Helper Library for the Cloud9
  *
  * @copyright 2010, Ajax.org B.V.
- * @license GPLv3 <http://www.gnu.org/licenses/gpl.txt>
  */
 
 define(function(require, exports, module) {
 
 var prefix = "state/search-history/";
 var TextMode = require("ace/mode/text").Mode;
-var Tokenizer = require("ace/tokenizer").Tokenizer;
 var HashHandler = require("ace/keyboard/hash_handler").HashHandler;
-var TextHighlightRules = require("ace/mode/text_highlight_rules").TextHighlightRules;
 
 module.exports = function(settings, execFind, toggleDialog, restore, toggleOption, resizeBox) {
     return {
@@ -233,7 +230,7 @@ module.exports = function(settings, execFind, toggleDialog, restore, toggleOptio
             range: /^([+*?]|\{(\d+,\d+|\d+,?|,?\d+)\})\??|^[$\^]/
         },
     
-        //Calculate RegExp Colors
+        // Calculate RegExp Colors
         parseRegExp: function(value) {
             var re = this.regexp;
             var l, t, c, sub = 0, collection = 0;
@@ -245,7 +242,7 @@ module.exports = function(settings, execFind, toggleDialog, restore, toggleOptio
                 value = value.substr(text.length);
             };
     
-            //This could be optimized if needed
+            // This could be optimized if needed
             while (value.length) {
                 if ((c = value.charAt(0)) == "\\") {
                     // \\ detection
