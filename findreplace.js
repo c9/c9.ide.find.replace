@@ -3,7 +3,7 @@ define(function(require, exports, module) {
     
     main.consumes = [
         "Plugin", "settings", "ui", "layout",
-        "anims", "menus", "tabManager", "commands", "tooltip", "apf"
+        "menus", "tabManager", "commands", "tooltip", "apf"
     ];
     main.provides = ["findreplace"];
     return main;
@@ -12,7 +12,6 @@ define(function(require, exports, module) {
         var Plugin = imports.Plugin;
         var settings = imports.settings;
         var ui = imports.ui;
-        var anims = imports.anims;
         var menus = imports.menus;
         var layout = imports.layout;
         var commands = imports.commands;
@@ -893,6 +892,12 @@ define(function(require, exports, module) {
         });
         plugin.on("unload", function(){
             loaded = false;
+            asyncSearch.terminateWorker();
+            searchRow = txtFind = winSearchReplace = txtReplace = null;
+            tooltipSearchReplace = divSearchCount = null;
+            btnPrev = btnNext = btnReplace = btnReplaceAll = hbox = btnCollapse = null;
+            currentRange = lastSearchOptions = timer = null;
+            startPos = {};
         });
 
         /***** Register and define API *****/

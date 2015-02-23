@@ -88,14 +88,6 @@ define(function(require, exports, module) {
         callbacks = {};
     }
 
-    function attachToSession() {
-
-    }
-
-    function detach() {
-        terminateWorker();
-    }
-
     function execFind(session, options, cb) {
         if (!session.searchTracker) {
             session.searchTracker = new SearchTracker(session);
@@ -276,6 +268,7 @@ define(function(require, exports, module) {
         };
     }).call(SearchTracker.prototype);
 
-
+    
+    exports.terminateWorker = terminateWorker;    
     exports.execFind = execFind;
 });
