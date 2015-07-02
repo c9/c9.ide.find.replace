@@ -100,18 +100,25 @@ define(function(require, exports, module) {
                         replace(true);
                     }
                 },
+                findAll: {
+                    isAvailable: isSupported,
+                    bindKey: {mac: "Ctrl-Alt-G", win: "Ctrl-Alt-K"},
+                    exec: function(editor) { 
+                        findAgain(editor.ace, 0);
+                    },
+                },
                 findnext: {
                     isAvailable: isSupported,
                     bindKey: {mac: "Command-G", win: "Ctrl-K"},
-                    exec: function(editor) { 
-                        findAgain(editor.ace);
+                    exec: function(editor) {
+                        findAgain(editor.ace, 1);
                     },
                 },
                 findprevious: {
                     isAvailable: isSupported,
                     bindKey: {mac: "Command-Shift-G", win: "Ctrl-Shift-K"},
                     exec: function(editor) {
-                        findAgain(editor.ace, true);
+                        findAgain(editor.ace, -1);
                     },
                 },
                 find: {
@@ -597,16 +604,48 @@ define(function(require, exports, module) {
 
                 if (type != "highlight")
                     ace.revealRange(newRange);
-
-                // highlight
-                ace.session.highlight(re);
-                ace.session._signal("changeBackMarker");
+                
+                if (options.findAll) {
+                    selectAll(result);
+                } else {
+                    // highlight
+                    ace.session.highlight(re);
+                    ace.session._signal("changeBackMarker");
+                }
                 
                 callback && callback(result);
             });
+            
+            function selectAll(result) {
+                var indexArray = result.matches;
+                var value = result.value;
+                var startIndex = result.offset;
+                var re = options.re;
+                if (!indexArray.length)
+                    return;
+        
+                var doc = ace.session.doc;
+                var ranges = [];
+                var startPos = {row: 0, column: 0};
+                var endPos = {row: 0, column: 0};
+                var start = 0, end = 0, offset = 0;
+                for (var i = 0; i < indexArray.length; i++) {
+                    var index = indexArray[i] + startIndex;
+                    re.lastIndex = index;
+                    var match = re.exec(value);
+                    var txt = match[0];
+                    var len = txt.length;
+                    startPos = doc.indexToPosition(index + offset - start + startPos.column, startPos.row);
+                    start = index + offset;
+                    end = index + len + offset;
+                    endPos = doc.indexToPosition(end - start + startPos.column, startPos.row);
+                    ranges.push(Range.fromPoints(startPos, endPos));
+                }
+                ace.selection.fromJSON(ranges);
+            }
         }
         
-        function findAgain(ace, backwards) {
+        function findAgain(ace, dir) {
             if (!ace.selection.isEmpty() && lastSearchOptions) {
                 var text = ace.session.getTextRange();
                 var match = lastSearchOptions.re && lastSearchOptions.re.exec(text);
@@ -623,10 +662,16 @@ define(function(require, exports, module) {
                     marker = null;
                 }
                 
-                lastSearchOptions.backwards = backwards;
+                lastSearchOptions.backwards = dir == -1;
+                lastSearchOptions.findAll = dir == 0;
                 execFind(null, true, lastSearchOptions);
-            } else
-                backwards ? ace.findPrevious() : ace.findNext();
+            } else if (dir == -1) {
+                ace.findPrevious();
+            } else if (dir == 1) {
+                ace.findNext();
+            } else if (dir == 0) {
+                ace.findAll();
+            }
         }
         
         function replace(backwards) {
