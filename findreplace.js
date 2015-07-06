@@ -645,7 +645,7 @@ define(function(require, exports, module) {
             }
         }
         
-        function findAgain(ace, dir) {
+        function findAgain(ace, direction) {
             if (!ace.selection.isEmpty() && lastSearchOptions) {
                 var text = ace.session.getTextRange();
                 var match = lastSearchOptions.re && lastSearchOptions.re.exec(text);
@@ -662,14 +662,14 @@ define(function(require, exports, module) {
                     marker = null;
                 }
                 
-                lastSearchOptions.backwards = dir == -1;
-                lastSearchOptions.findAll = dir == 0;
+                lastSearchOptions.backwards = direction == -1;
+                lastSearchOptions.findAll = direction == 0;
                 execFind(null, true, lastSearchOptions);
-            } else if (dir == -1) {
+            } else if (direction == -1) {
                 ace.findPrevious();
-            } else if (dir == 1) {
+            } else if (direction == 1) {
                 ace.findNext();
-            } else if (dir == 0) {
+            } else if (direction == 0) {
                 ace.findAll();
             }
         }
