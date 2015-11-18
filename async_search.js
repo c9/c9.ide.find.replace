@@ -60,7 +60,9 @@ define(function(require, exports, module) {
         var blob = new Blob([ workerSrc ], { type: 'application/javascript' });
         var blobUrl = (window.URL || window.webkitURL).createObjectURL(blob);
         $worker = new Worker(blobUrl);
-        (window.URL || window.webkitURL).revokeObjectURL(blobUrl);
+        setTimeout(function() { // IE EDGE needs a timeout here
+            (window.URL || window.webkitURL).revokeObjectURL(blobUrl);
+        });
         $worker.onmessage = onMessage;
         $worker.onerror = function(e) {
             throw e;
