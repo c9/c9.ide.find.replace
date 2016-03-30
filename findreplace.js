@@ -897,11 +897,11 @@ define(function(require, exports, module) {
             if (changeFocusInside)
                 return;
 
-            if (isBlur)
+            var ace = getAce();
+            if (isBlur || !ace)
                 return removeFindInRangeMarker();
 
-            var ace = getAce();
-            if (ace && e.fromElement && e.fromElement.editor) {
+            if (e.fromElement && e.fromElement.editor) {
                 if (e.fromElement.editor.ace == ace)
                     setStartPos(ace);
                 
