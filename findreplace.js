@@ -525,7 +525,7 @@ define(function(require, exports, module) {
          */
         function execFind(reverseBackwards, type, options, callback) {
             var ace = getAce();
-            if (!ace)
+            if (!ace || !txtFind)
                 return;
 
             if (timer)
