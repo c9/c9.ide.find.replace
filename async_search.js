@@ -24,7 +24,7 @@ define(function(require, exports, module) {
                 }
             }
 
-            cb({matches: matches});
+            cb({ matches: matches });
         }
 
         _self.onmessage = function(e) {
@@ -48,7 +48,7 @@ define(function(require, exports, module) {
                 } catch (e) {
                     r = e.message;
                 }
-                postMessage({type: "event", data: r});
+                postMessage({ type: "event", data: r });
             }
         };
 
@@ -93,7 +93,7 @@ define(function(require, exports, module) {
     function execFind(session, options, cb) {
         if (!session.searchTracker) {
             session.searchTracker = new SearchTracker(session);
-            session.once("change", function() {session.searchTracker = null});
+            session.once("change", function() {session.searchTracker = null;});
         }
         var st = session.searchTracker;
         session.searchTracker.get(options, function(all) {
@@ -104,7 +104,7 @@ define(function(require, exports, module) {
             var offset = options.indexRange ? options.indexRange[0] : 0;
             
             if (options.findAll)
-                return cb({value: st.value, matches: all, offset: offset});
+                return cb({ value: st.value, matches: all, offset: offset });
             
             // preprocess options
             var backwards = options.backwards === true;
@@ -210,7 +210,7 @@ define(function(require, exports, module) {
         this.initWorker();
     }
         
-    (function(){
+    (function() {
         this.rangeToIndex = function(r) {
             var start = this.session.doc.positionToIndex(r.start);
             var end = start - r.start.column +
@@ -263,7 +263,7 @@ define(function(require, exports, module) {
         this.initWorker = function() {
             var worker = getWorker();
             if (worker.value != this.value) {
-                worker.postMessage({command:"setValue", data: this.value});
+                worker.postMessage({ command: "setValue", data: this.value });
                 worker.value = this.value;
             }
             return worker;

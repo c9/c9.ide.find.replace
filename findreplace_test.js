@@ -24,7 +24,7 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
         "plugins/c9.ide.ui/menus",
         {
             packagePath: "plugins/c9.core/settings",
-            settings: { user: { general: { animateui: true } } }
+            settings: { user: { general: { animateui: true }}}
         },
         "plugins/c9.core/api.js",
         {
@@ -74,19 +74,19 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
             provides: ["layout"],
             setup: function(options, imports, register) {
                 register(null, {
-                    layout: (function(){
+                    layout: (function() {
                         // Load the skin
                         imports.ui.insertSkin({
-                            "data"       : skin,
-                            "media-path" : "plugins/c9.ide.layout.classic/images/",
-                            "icon-path"  : "plugins/c9.ide.layout.classic/icons/"
-                        }, {addElement: function(){}});
+                            "data": skin,
+                            "media-path": "plugins/c9.ide.layout.classic/images/",
+                            "icon-path": "plugins/c9.ide.layout.classic/icons/"
+                        }, { addElement: function() {} });
                         
                         return {
-                            proposeLayoutChange: function(){},
+                            proposeLayoutChange: function() {},
                             initMenus: function() {},
-                            setFindArea: function(){},
-                            findParent: function(){
+                            setFindArea: function() {},
+                            findParent: function() {
                                 if (!bar) {
                                     bar = apf.document.documentElement.appendChild(
                                         new imports.ui.vsplitbox());
@@ -144,7 +144,7 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
                 done();
             });
             
-            describe("open", function(){
+            describe("open", function() {
                 var ace, tab;
                 it('should open a pane with just an editor', function(done) {
                     tabs.open({
@@ -165,7 +165,7 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
                 it('should open findbar and select text', function(done) {
                     var str = [];
                     for (var i = 0; i < 100; i++) {
-                        str.push( "a " + i + " b " + (i%10));
+                        str.push("a " + i + " b " + (i % 10));
                     }
                     
                     tab.editor.focus();
@@ -279,7 +279,7 @@ require(["lib/architect/architect", "lib/chai/chai", "text!plugins/c9.ide.layout
                     window.app.services.findreplace.getElement("winSearchReplace").visible;
                 });
             });
-            describe("unload", function(){
+            describe("unload", function() {
                 it('should open a pane with just an editor', function(done) {
                     if (!onload.remain)
                         findreplace.unload();

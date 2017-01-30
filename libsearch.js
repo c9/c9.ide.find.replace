@@ -38,7 +38,7 @@ module.exports = function(settings, execFind, toggleDialog, restore, toggleOptio
                     codebox.selection.lead.row = codebox.session.getLength() - 1;
                 },
                 "Ctrl-Home": function(codebox) { _self.navigateList("first", codebox); },
-                "Ctrl-End" : function(codebox) { _self.navigateList("last", codebox);  },
+                "Ctrl-End": function(codebox) { _self.navigateList("last", codebox); },
                 "Esc": function() { toggleDialog(-1); },
                 "Shift-Esc": function() { restore(); },
                 "Ctrl-Return|Alt-Return": function(codebox) { codebox.insert("\n"); },
@@ -78,7 +78,7 @@ module.exports = function(settings, execFind, toggleDialog, restore, toggleOptio
     
                 var success = editor.execCommand(command);
                 if (success !== false)
-                    return {command: "null"};
+                    return { command: "null" };
             };
             txtFind.ace.setKeyboardHandler(iSearchHandler);
             return iSearchHandler;
@@ -145,7 +145,7 @@ module.exports = function(settings, execFind, toggleDialog, restore, toggleOptio
                 tooltip.$ext.style.left = pos[0] + txtFind.getLeft() + "px";
                 tooltip.$ext.style.top = (pos[1] - 16) + "px";
     
-                this.tooltipTimer = setTimeout(function(){
+                this.tooltipTimer = setTimeout(function() {
                     tooltip.$ext.style.display = "block";
                 }, 200);
     
@@ -164,27 +164,27 @@ module.exports = function(settings, execFind, toggleDialog, restore, toggleOptio
             var textMode = new TextMode();
             textMode.$highlightRules = new textMode.HighlightRules();
             var rules = {
-                "literal" : [
-                    {defaultToken: "text"}
+                "literal": [
+                    { defaultToken: "text" }
                 ],
-                "jsOnly" : [
-                    {token : "constant.language.escape", regex : /\$[\d&\$]|\\[\\nrt]/},
+                "jsOnly": [
+                    { token: "constant.language.escape", regex: /\$[\d&\$]|\\[\\nrt]/ },
                 ],
-                "extended" : [
-                    {token : "constant.language.escape", regex : /\$\$|\\[\\nrt]/},
-                    {token : "string", regex : /\\\d|\$[\d&]/},
-                    {token : "keyword", regex : /\\U/, next  : "uppercase"},
-                    {token : "keyword", regex : /\\L/, next  : "lowercase"},
-                    {token : "keyword", regex : /\\E/, next  : "start"},
-                    {token : "keyword", regex : /\\[ul]/, next  : "uppercase"},
+                "extended": [
+                    { token: "constant.language.escape", regex: /\$\$|\\[\\nrt]/ },
+                    { token: "string", regex: /\\\d|\$[\d&]/ },
+                    { token: "keyword", regex: /\\U/, next: "uppercase" },
+                    { token: "keyword", regex: /\\L/, next: "lowercase" },
+                    { token: "keyword", regex: /\\E/, next: "start" },
+                    { token: "keyword", regex: /\\[ul]/, next: "uppercase" },
                 ],
-                "uppercase" : [
-                    {include : "extended"},
-                    {defaultToken : "uppercase"}
+                "uppercase": [
+                    { include: "extended" },
+                    { defaultToken: "uppercase" }
                 ],
-                "lowercase" : [
-                    {include : "extended"},
-                    {defaultToken : "lowercase"}
+                "lowercase": [
+                    { include: "extended" },
+                    { defaultToken: "lowercase" }
                 ]
             };
             
@@ -199,8 +199,8 @@ module.exports = function(settings, execFind, toggleDialog, restore, toggleOptio
         setRegexpMode: function(txtFind, isRegexp) {
             var tokenizer = {}, _self = this;
             tokenizer.getLineTokens = isRegexp
-                ? function(val) { return {tokens: _self.parseRegExp(val), state: ""}; }
-                : function(val) { return {tokens: [{value: val, type: "text"}], state: ""}; };
+                ? function(val) { return { tokens: _self.parseRegExp(val), state: "" }; }
+                : function(val) { return { tokens: [{ value: val, type: "text" }], state: "" }; };
     
             txtFind.ace.session.bgTokenizer.tokenizer = tokenizer;
             txtFind.ace.session.bgTokenizer.lines = [];
@@ -223,8 +223,8 @@ module.exports = function(settings, execFind, toggleDialog, restore, toggleOptio
         },
     
         regexp: {
-            alone: {"^":1, "$":1, ".":1},
-            rangeStart: {"+":1, "*":1, "?":1, "{":1},
+            alone: { "^": 1, "$": 1, ".": 1 },
+            rangeStart: { "+": 1, "*": 1, "?": 1, "{": 1 },
             replace: /^\\[sSwWbBnrd]/,
             searches: /^\((?:\?\:|\?\!|\?|\?\=|\?\<\=)/,
             range: /^([+*?]|\{(\d+,\d+|\d+,?|,?\d+)\})\??|^[$\^]/
@@ -359,12 +359,12 @@ module.exports = function(settings, execFind, toggleDialog, restore, toggleOptio
             }
     
             // Process out ace token list
-            var last = "text", res = [], token = {type: last, value: ""};
-            for (var i = 0; i < out.length; i+=2) {
-                if (out[i+1] != last) {
+            var last = "text", res = [], token = { type: last, value: "" };
+            for (var i = 0; i < out.length; i += 2) {
+                if (out[i + 1] != last) {
                     token.value && res.push(token);
-                    last = out[i+1];
-                    token = {type: "r_" + last, value: ""};
+                    last = out[i + 1];
+                    token = { type: "r_" + last, value: "" };
                 }
                token.value += out[i];
             }

@@ -56,7 +56,7 @@ define(function(require, exports, module) {
         }
         
         var loaded = false;
-        function load(){
+        function load() {
             if (loaded) return false;
             loaded = true;
 
@@ -102,21 +102,21 @@ define(function(require, exports, module) {
                 },
                 findAll: {
                     isAvailable: isSupported,
-                    bindKey: {mac: "Ctrl-Alt-G", win: "Ctrl-Alt-K"},
+                    bindKey: { mac: "Ctrl-Alt-G", win: "Ctrl-Alt-K" },
                     exec: function(editor) { 
                         findAgain(editor.ace, 0);
                     },
                 },
                 findnext: {
                     isAvailable: isSupported,
-                    bindKey: {mac: "Command-G", win: "Ctrl-K"},
+                    bindKey: { mac: "Command-G", win: "Ctrl-K" },
                     exec: function(editor) {
                         findAgain(editor.ace, 1);
                     },
                 },
                 findprevious: {
                     isAvailable: isSupported,
-                    bindKey: {mac: "Command-Shift-G", win: "Ctrl-Shift-K"},
+                    bindKey: { mac: "Command-Shift-G", win: "Ctrl-Shift-K" },
                     exec: function(editor) {
                         findAgain(editor.ace, -1);
                     },
@@ -130,7 +130,7 @@ define(function(require, exports, module) {
                     }
                 },
                 hidesearchreplace: {
-                    bindKey: {mac: "ESC", win: "ESC"},
+                    bindKey: { mac: "ESC", win: "ESC" },
                     isAvailable: function(editor) {
                         return winSearchReplace && winSearchReplace.visible;
                     },
@@ -179,7 +179,7 @@ define(function(require, exports, module) {
         }
 
         var drawn = false;
-        function draw(){
+        function draw() {
             if (drawn) return;
             drawn = true;
 
@@ -190,8 +190,8 @@ define(function(require, exports, module) {
             ui.insertSkin({
                 name: "searchreplace",
                 data: skin,
-                "media-path" : options.staticPrefix + "/images/",
-                "icon-path"  : options.staticPrefix + "/icons/"
+                "media-path": options.staticPrefix + "/images/",
+                "icon-path": options.staticPrefix + "/icons/"
             }, plugin);
 
             // Create UI elements
@@ -216,18 +216,18 @@ define(function(require, exports, module) {
             btnReplaceAll = plugin.getElement("btnReplaceAll");
             btnCollapse = plugin.getElement("btnCollapse");
 
-            btnNext.on("click", function(){ findNext(false); });
-            btnPrev.on("click", function(){ findNext(true); });
-            btnReplace.on("click", function(){ replace(); });
-            btnReplaceAll.on("click", function(){ replaceAll(); });
-            btnCollapse.on("click", function(){ toggleDialog(-1); });
+            btnNext.on("click", function() { findNext(false); });
+            btnPrev.on("click", function() { findNext(true); });
+            btnReplace.on("click", function() { replace(); });
+            btnReplaceAll.on("click", function() { replaceAll(); });
+            btnCollapse.on("click", function() { toggleDialog(-1); });
 
             txtFind.$ext.appendChild(divSearchCount.$ext);
             txtFind.$ext.appendChild(btnPrev.$ext);
             txtFind.$ext.appendChild(btnNext.$ext);
             
             var first = 0;
-            function resize(){
+            function resize() {
                 if (first++ < 2) { return; } // Skip first 2 calls
                 
                 var h = winSearchReplace.$ext.scrollHeight;
@@ -241,7 +241,7 @@ define(function(require, exports, module) {
             txtReplace.ace.renderer.on("autosize", resize);
 
             var timer, control;
-            txtReplace.on("focus", function(){
+            txtReplace.on("focus", function() {
                 if (control) control.stop();
                 control = {};
 
@@ -254,12 +254,12 @@ define(function(require, exports, module) {
                     control: control,
                     steps: 15,
                     interval: 1,
-                    onfinish: function(){
+                    onfinish: function() {
                         ui.layout.forceResize(null, true);
                     }
                 });
             });
-            txtReplace.on("blur", function(){
+            txtReplace.on("blur", function() {
                 if (txtReplace.getValue())
                     return;
                     
@@ -275,7 +275,7 @@ define(function(require, exports, module) {
                     control: control,
                     steps: 15,
                     interval: 1,
-                    onfinish: function(){
+                    onfinish: function() {
                         ui.layout.forceResize(null, true);
                     }
                 });
@@ -317,7 +317,7 @@ define(function(require, exports, module) {
                     timeout: 0,
                     tooltip: tooltipSearchReplace.$ext,
                     animate: false,
-                    getPosition: function(){
+                    getPosition: function() {
                         var pos = ui.getAbsolutePosition(winSearchReplace.$ext);
                         var pos2 = ui.getAbsolutePosition(node.$ext, winSearchReplace.$ext);
                         var left = pos[0] + pos2[0];
@@ -355,7 +355,7 @@ define(function(require, exports, module) {
             var cbs = parent.selectNodes("//a:checkbox");
 
             cbs.forEach(function(cb) {
-                cb.on("click", function(){
+                cb.on("click", function() {
                     if (this.name == "chkSearchSelection") 
                         updateFindInRangeMarker({});
                     execFind(undefined, "highlight");
@@ -367,7 +367,7 @@ define(function(require, exports, module) {
                     timeout: 0,
                     tooltip: tooltipSearchReplace.$ext,
                     animate: false,
-                    getPosition: function(){
+                    getPosition: function() {
                         var pos = ui.getAbsolutePosition(winSearchReplace.$ext);
                         var left = cb.$ext.getBoundingClientRect().left;
                         var top = pos[1];
@@ -569,7 +569,7 @@ define(function(require, exports, module) {
             if (!re) {
                 updateCounter();
                 if (type != "highlight") {
-                    var pos = options.start[options.backwards? "end" : "start"];
+                    var pos = options.start[options.backwards ? "end" : "start"];
                     var newRange = options.range || Range.fromPoints(pos, pos);
                     ace.revealRange(newRange);
                 }
@@ -583,16 +583,16 @@ define(function(require, exports, module) {
             options.re = re;
             options.source = re.source;
             options.flags = re.ignoreCase ? "igm" : "gm";
-            asyncSearch.execFind(ace.session, options , function(result) {
+            asyncSearch.execFind(ace.session, options, function(result) {
                 if (result == "waiting")
                     return updateCounter("...");
 
-                result = result || {total: 0, current: 0};
+                result = result || { total: 0, current: 0 };
                 updateCounter(result.total, result.current, null, result.wrapped);
                 
                 if (!result.start || !result.end) {
                     result.start = 
-                    result.end = range[!options.backwards ? "start": "end"];
+                    result.end = range[!options.backwards ? "start" : "end"];
                 }
                 var newRange = Range.fromPoints(result.start, result.end);
                 
@@ -626,8 +626,8 @@ define(function(require, exports, module) {
         
                 var doc = ace.session.doc;
                 var ranges = [];
-                var startPos = {row: 0, column: 0};
-                var endPos = {row: 0, column: 0};
+                var startPos = { row: 0, column: 0 };
+                var endPos = { row: 0, column: 0 };
                 var start = 0, end = 0, offset = 0;
                 for (var i = 0; i < indexArray.length; i++) {
                     var index = indexArray[i] + startIndex;
@@ -723,9 +723,9 @@ define(function(require, exports, module) {
             options.findAll = true;
             
             var replaceFn = getReplaceFunction(options);
-            ace.$search.set({preserveCase: chk.preserveCase.checked});
+            ace.$search.set({ preserveCase: chk.preserveCase.checked });
             
-            asyncSearch.execFind(ace.session, options , function(result) {
+            asyncSearch.execFind(ace.session, options, function(result) {
                 var replaced = 0;
                 var indexArray = result.matches;
                 var value = result.value;
@@ -736,8 +736,8 @@ define(function(require, exports, module) {
         
                 var doc = ace.session.doc;
 
-                var startPos = {row: 0, column: 0};
-                var endPos = {row: 0, column: 0};
+                var startPos = { row: 0, column: 0 };
+                var endPos = { row: 0, column: 0 };
                 var start = 0, end = 0, offset = 0;
                 var range = new Range();
                 for (var i = 0; i < indexArray.length; i++) {
@@ -771,7 +771,7 @@ define(function(require, exports, module) {
             options.preserveCase = chk.preserveCase.checked;
             
             if (options.replaceMode == "literal")
-                return function() { return val };
+                return function() { return val; };
             
             var fmtParts = [];
             function add(p) {
@@ -781,7 +781,7 @@ define(function(require, exports, module) {
                 else if (typeof p == "number" || p)
                     fmtParts.push(p);
             }
-            var lut = {n: "\n", t: "\t", r: "\r", "&": 0, U: -1, L: -2, E: -3, u: -4, l: -5};
+            var lut = { n: "\n", t: "\t", r: "\r", "&": 0, U: -1, L: -2, E: -3, u: -4, l: -5 };
             var re = /\$([\$&\d])|\\([\\ULulEntr\d])/g;
             var index = 0, m;
             while ((m = re.exec(val))) {
@@ -797,7 +797,7 @@ define(function(require, exports, module) {
             add(val.substr(index));
             
             if (fmtParts.length == 1 && typeof fmtParts[0] == "string" && !options.preserveCase)
-                return function() { return fmtParts[0] };
+                return function() { return fmtParts[0]; };
 
             return function(match) {
                 var gChangeCase = 0;
@@ -832,7 +832,7 @@ define(function(require, exports, module) {
                 if (options.preserveCase) {
                     var input = match[0];
                     var replacement = result.split("");
-                    for (var i = Math.min(input.length, replacement.length); i--; ) {
+                    for (var i = Math.min(input.length, replacement.length); i--;) {
                         var ch = input[i];
                         if (ch && ch.toLowerCase() != ch)
                             replacement[i] = replacement[i].toUpperCase();
@@ -871,7 +871,7 @@ define(function(require, exports, module) {
             range.start = start.end = session.doc.createAnchor(start.end.row, start.end.column);
             range.end = end.start = session.doc.createAnchor(end.start.row, end.start.column);
             
-            return marker = {start: start, end: end, session: session};
+            return marker = { start: start, end: end, session: session };
         }
         
         function removeFindInRangeMarker(reset) {
@@ -926,16 +926,16 @@ define(function(require, exports, module) {
 
         /***** Lifecycle *****/
 
-        plugin.on("load", function(){
+        plugin.on("load", function() {
             load();
         });
-        plugin.on("enable", function(){
+        plugin.on("enable", function() {
 
         });
-        plugin.on("disable", function(){
+        plugin.on("disable", function() {
 
         });
-        plugin.on("unload", function(){
+        plugin.on("unload", function() {
             loaded = false;
             asyncSearch.terminateWorker();
             searchRow = txtFind = winSearchReplace = txtReplace = null;
@@ -981,7 +981,7 @@ define(function(require, exports, module) {
             /**
              * 
              */
-            get aml(){ return winSearchReplace; },
+            get aml() { return winSearchReplace; },
             
             /**
              * Toggles the visibility of the search and replace panel.
